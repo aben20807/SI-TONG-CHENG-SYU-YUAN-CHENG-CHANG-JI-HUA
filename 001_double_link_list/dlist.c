@@ -15,6 +15,7 @@ struct Dlist {
 };
 
 Dlist *new();
+Node *new_node(int data);
 void insert_first(Dlist *this, Node *new);
 void insert_last(Dlist *this, Node *new);
 void insert_after(Dlist *this, Node *node, Node *new);
@@ -26,6 +27,8 @@ void remove_node(Dlist *this, Node *node);
 int main () {
     Dlist *d = new();
     printf("%d\n", d->size);
+    insert_first(d, new_node(1));
+    printf("%d\n", d->size);
 }
 
 Dlist *new() {
@@ -36,7 +39,24 @@ Dlist *new() {
     return ret;
 }
 
-void insert_first(Dlist *this, Node *new);
+Node *new_node(int data) {
+    Node *ret = malloc(sizeof(Node));
+    ret->data = data;
+    ret->pre = NULL;
+    ret->nxt = NULL;
+    return ret;
+}
+
+void insert_first(Dlist *this, Node *new) {
+    this->size++;
+    if (this->head == NULL) {
+        this->head = new;
+    } else {
+        this->head->pre = new;
+        new->nxt = this->head;
+        this->head = new;
+    }
+}
 void insert_last(Dlist *this, Node *new);
 void insert_after(Dlist *this, Node *node, Node *new);
 void insert_before(Dlist *this, Node *node, Node *new);

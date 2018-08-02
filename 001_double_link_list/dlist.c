@@ -6,17 +6,21 @@ struct Node {
     Node *pre;
     Node *nxt;
 };
-typedef struct Node *List;
+typedef struct Dlist Dlist;
+struct Dlist {
+    int size;
+    Node *head;
+    Node *tail;
+};
 
-Node *get_first(List *this);
-Node *get_last(List *this);
-void insert_first(List *this, Node *new);
-void insert_last(List *this, Node *new);
-void insert_after(List *this, Node *node, Node *new);
-void insert_before(List *this, Node *node, Node *new);
-void remove_first(List *this);
-void remove_last(List *this);
-void remove_node(List *this, Node *node);
+Dlist new();
+void insert_first(Dlist *this, Node *new);
+void insert_last(Dlist *this, Node *new);
+void insert_after(Dlist *this, Node *node, Node *new);
+void insert_before(Dlist *this, Node *node, Node *new);
+void remove_first(Dlist *this);
+void remove_last(Dlist *this);
+void remove_node(Dlist *this, Node *node);
 
 int main () {
 }

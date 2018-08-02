@@ -16,6 +16,7 @@ struct Dlist {
 
 Dlist *new();
 Node *new_node(int data);
+void print_list(Dlist *this);
 void insert_first(Dlist *this, Node *new);
 void insert_last(Dlist *this, Node *new);
 void insert_after(Dlist *this, Node *node, Node *new);
@@ -29,6 +30,10 @@ int main () {
     printf("%d\n", d->size);
     insert_first(d, new_node(1));
     printf("%d\n", d->size);
+    print_list(d);
+    insert_first(d, new_node(2));
+    insert_first(d, new_node(3));
+    print_list(d);
 }
 
 Dlist *new() {
@@ -47,6 +52,21 @@ Node *new_node(int data) {
     return ret;
 }
 
+void print_list(Dlist *this) {
+    Node *cur = this->head;
+    if (cur != NULL) {
+        printf("%d", cur->data);
+        cur = cur->nxt;
+    } else {
+        return;
+    }
+    while (cur != NULL) {
+        printf(" - %d", cur->data);
+        cur = cur->nxt;
+    }
+    printf("\n");
+}
+
 void insert_first(Dlist *this, Node *new) {
     this->size++;
     if (this->head == NULL) {
@@ -57,7 +77,17 @@ void insert_first(Dlist *this, Node *new) {
         this->head = new;
     }
 }
-void insert_last(Dlist *this, Node *new);
+
+void insert_last(Dlist *this, Node *new) {
+    this->size++;
+    if (this->tail == NULL) {
+        this->tail = new;
+    } else {
+        this->head->pre = new;
+        new->nxt = this->head;
+        this->head = new;
+    }
+}
 void insert_after(Dlist *this, Node *node, Node *new);
 void insert_before(Dlist *this, Node *node, Node *new);
 void remove_first(Dlist *this);

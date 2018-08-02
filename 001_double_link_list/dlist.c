@@ -40,6 +40,9 @@ int main () {
     insert_after(d, search(d, 1), new_node(6));
     insert_after(d, search(d, 5), new_node(7));
     print_list(d);
+    insert_before(d, search(d, 1), new_node(8));
+    insert_before(d, search(d, 3), new_node(9));
+    print_list(d);
 }
 
 Dlist *new() {
@@ -127,6 +130,7 @@ void insert_after(Dlist *this, Node *node, Node *new) {
     if (node->nxt == NULL) {
         node->nxt = new;
         new->pre = node;
+        this->tail = new;
     } else {
         new->nxt = node->nxt;
         new->pre = node;
@@ -134,7 +138,24 @@ void insert_after(Dlist *this, Node *node, Node *new) {
         new->pre->nxt = new;
     }
 }
-void insert_before(Dlist *this, Node *node, Node *new);
+
+void insert_before(Dlist *this, Node *node, Node *new) {
+    if (this == NULL && node == NULL && new == NULL) {
+        return;
+    }
+    this->size++;
+    if (node->pre == NULL) {
+        node->pre = new;
+        new->nxt = node;
+        this->head = new;
+    } else {
+        new->pre = node->pre;
+        new->nxt = node;
+        new->pre->nxt = new;
+        new->nxt->pre = new;
+    }
+}
+
 void remove_first(Dlist *this);
 void remove_last(Dlist *this);
 void remove_node(Dlist *this, Node *node);

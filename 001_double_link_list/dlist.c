@@ -87,7 +87,7 @@ void insert_first(Dlist *this, Node *new) {
 }
 
 void insert_last(Dlist *this, Node *new) {
-    if (this == NULL) {
+    if (this == null) {
         return;
     }
     this->size++;
@@ -102,7 +102,19 @@ void insert_last(Dlist *this, Node *new) {
 }
 
 void insert_after(Dlist *this, Node *node, Node *new) {
-    // if ()
+    if (this == null) {
+        return;
+    }
+    Node *cur = this->head;
+    if (node->nxt == NULL) {
+        node->nxt = new;
+        new->pre = node;
+    } else {
+        new->nxt = node->nxt;
+        new->pre = node;
+        new->nxt->pre = new;
+        new->pre->nxt = new;
+    }
 }
 void insert_before(Dlist *this, Node *node, Node *new);
 void remove_first(Dlist *this);

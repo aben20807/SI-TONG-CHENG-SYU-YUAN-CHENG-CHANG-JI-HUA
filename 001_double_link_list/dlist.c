@@ -17,6 +17,7 @@ struct Dlist {
 Dlist *new();
 Node *new_node(int data);
 void print_list(Dlist *this);
+Node *search(Dlist *this, int target);
 void insert_first(Dlist *this, Node *new);
 void insert_last(Dlist *this, Node *new);
 void insert_after(Dlist *this, Node *node, Node *new);
@@ -36,6 +37,9 @@ int main () {
     insert_last(d, new_node(4));
     insert_last(d, new_node(5));
     print_list(d);
+    insert_after(d, search(d, 1), new_node(6));
+    insert_after(d, search(d, 5), new_node(7));
+    print_list(d);
 }
 
 Dlist *new() {
@@ -52,6 +56,20 @@ Node *new_node(int data) {
     ret->pre = NULL;
     ret->nxt = NULL;
     return ret;
+}
+
+Node *search(Dlist *this, int target) {
+    if (this == NULL) {
+        return NULL;
+    }
+    Node *cur = this->head;
+    while (cur != NULL) {
+        if (cur->data == target) {
+            return cur;
+        }
+        cur = cur->nxt;
+    }
+    return NULL;
 }
 
 void print_list(Dlist *this) {
@@ -72,7 +90,7 @@ void print_list(Dlist *this) {
 }
 
 void insert_first(Dlist *this, Node *new) {
-    if (this == NULL) {
+    if (this == NULL && new == NULL) {
         return;
     }
     this->size++;
@@ -87,7 +105,7 @@ void insert_first(Dlist *this, Node *new) {
 }
 
 void insert_last(Dlist *this, Node *new) {
-    if (this == null) {
+    if (this == NULL && new == NULL) {
         return;
     }
     this->size++;
@@ -102,10 +120,10 @@ void insert_last(Dlist *this, Node *new) {
 }
 
 void insert_after(Dlist *this, Node *node, Node *new) {
-    if (this == null) {
+    if (this == NULL && node == NULL && new == NULL) {
         return;
     }
-    Node *cur = this->head;
+    this->size++;
     if (node->nxt == NULL) {
         node->nxt = new;
         new->pre = node;

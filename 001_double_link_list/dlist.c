@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TODO contains, delete_list, status
+
 typedef struct Node Node;
 struct Node {
     int data;
@@ -42,6 +44,15 @@ int main () {
     print_list(d);
     insert_before(d, search(d, 1), new_node(8));
     insert_before(d, search(d, 3), new_node(9));
+    print_list(d);
+    remove_first(d);
+    remove_first(d);
+    print_list(d);
+    remove_last(d);
+    remove_last(d);
+    print_list(d);
+    remove_node(d, search(d, 1));
+    remove_node(d, search(d, 3));
     print_list(d);
 }
 
@@ -162,7 +173,37 @@ void remove_first(Dlist *this) {
     }
     this->size--;
     Node *rm = this->head;
+    this->head->nxt->pre = NULL;
     this->head = this->head->nxt;
+    free(rm);
+    rm = NULL;
 }
-void remove_last(Dlist *this);
-void remove_node(Dlist *this, Node *node);
+
+void remove_last(Dlist *this) {
+    if (this == NULL || this->tail == NULL) {
+        return;
+    }
+    this->size--;
+    Node *rm = this->tail;
+    this->tail->pre->nxt = NULL;
+    this->tail = this->tail->pre;
+    free(rm);
+    rm = NULL;
+}
+
+void remove_node(Dlist *this, Node *node) {
+    if (this == NULL || node == NULL) {
+        return;
+    }
+    this->size--;
+    if (node->pre == NULL) {
+        remove_first(this);
+    } else if (node->nxt == NULL) {
+        remove_last(this);
+    } else {
+        node->nxt->pre = node->pre;
+        node->pre->nxt = node->nxt;
+        free(node);
+        node = NULL;
+    }
+}

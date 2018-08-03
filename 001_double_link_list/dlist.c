@@ -93,7 +93,7 @@ void print_list(Dlist *this) {
 }
 
 void insert_first(Dlist *this, Node *new) {
-    if (this == NULL && new == NULL) {
+    if (this == NULL || new == NULL) {
         return;
     }
     this->size++;
@@ -108,7 +108,7 @@ void insert_first(Dlist *this, Node *new) {
 }
 
 void insert_last(Dlist *this, Node *new) {
-    if (this == NULL && new == NULL) {
+    if (this == NULL || new == NULL) {
         return;
     }
     this->size++;
@@ -123,7 +123,7 @@ void insert_last(Dlist *this, Node *new) {
 }
 
 void insert_after(Dlist *this, Node *node, Node *new) {
-    if (this == NULL && node == NULL && new == NULL) {
+    if (this == NULL || node == NULL || new == NULL) {
         return;
     }
     this->size++;
@@ -140,7 +140,7 @@ void insert_after(Dlist *this, Node *node, Node *new) {
 }
 
 void insert_before(Dlist *this, Node *node, Node *new) {
-    if (this == NULL && node == NULL && new == NULL) {
+    if (this == NULL || node == NULL || new == NULL) {
         return;
     }
     this->size++;
@@ -156,6 +156,13 @@ void insert_before(Dlist *this, Node *node, Node *new) {
     }
 }
 
-void remove_first(Dlist *this);
+void remove_first(Dlist *this) {
+    if (this == NULL || this->head == NULL) {
+        return;
+    }
+    this->size--;
+    Node *rm = this->head;
+    this->head = this->head->nxt;
+}
 void remove_last(Dlist *this);
 void remove_node(Dlist *this, Node *node);

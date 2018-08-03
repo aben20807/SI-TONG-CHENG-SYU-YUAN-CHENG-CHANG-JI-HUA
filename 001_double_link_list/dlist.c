@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO contains, status
-
 typedef struct Node Node;
 struct Node {
     int data;
@@ -191,8 +189,7 @@ void insert_before(Dlist *this, Node *node, Node *new) {
 
 Node remove_first(Dlist *this) {
     if (this == NULL || this->head == NULL || this->head->nxt == NULL) {
-        Node n = {-1};
-        return n;
+        return (Node){-1};
     }
     this->size--;
     Node *rm = this->head;
@@ -206,8 +203,7 @@ Node remove_first(Dlist *this) {
 
 Node remove_last(Dlist *this) {
     if (this == NULL || this->tail == NULL || this->tail->pre == NULL) {
-        Node n = {-1};
-        return n;
+        return (Node){-1};
     }
     this->size--;
     Node *rm = this->tail;
@@ -221,8 +217,7 @@ Node remove_last(Dlist *this) {
 
 Node remove_node(Dlist *this, Node *node) {
     if (this == NULL || node == NULL) {
-        Node n = {-1};
-        return n;
+        return (Node){-1};
     }
     this->size--;
     if (node->pre == NULL) {

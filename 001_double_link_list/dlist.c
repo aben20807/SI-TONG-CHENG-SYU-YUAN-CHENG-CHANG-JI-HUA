@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO contains, delete_list, status
+// TODO contains, status
 
 typedef struct Node Node;
 struct Node {
@@ -17,6 +17,7 @@ struct Dlist {
 };
 
 Dlist *new();
+void delete(Dlist *this);
 Node *new_node(int data);
 void print_list(Dlist *this);
 Node *search(Dlist *this, int target);
@@ -54,6 +55,7 @@ int main () {
     remove_node(d, search(d, 1));
     remove_node(d, search(d, 3));
     print_list(d);
+    delete(d);
 }
 
 Dlist *new() {
@@ -62,6 +64,21 @@ Dlist *new() {
     ret->head = NULL;
     ret->tail = NULL;
     return ret;
+}
+
+void delete(Dlist *this) {
+    if (this == NULL) {
+        return;
+    }
+    printf("delete:");
+    Node *cur = this->head;
+    while (cur != NULL) {
+        Node *rm = cur;
+        cur = cur->nxt;
+        printf(" %d", rm->data);
+        remove_node(this, rm);
+    }
+    printf("\n");
 }
 
 Node *new_node(int data) {
@@ -168,7 +185,7 @@ void insert_before(Dlist *this, Node *node, Node *new) {
 }
 
 void remove_first(Dlist *this) {
-    if (this == NULL || this->head == NULL) {
+    if (this == NULL || this->head == NULL || this->head->nxt == NULL) {
         return;
     }
     this->size--;
@@ -180,7 +197,7 @@ void remove_first(Dlist *this) {
 }
 
 void remove_last(Dlist *this) {
-    if (this == NULL || this->tail == NULL) {
+    if (this == NULL || this->tail == NULL || this->tail->pre == NULL) {
         return;
     }
     this->size--;

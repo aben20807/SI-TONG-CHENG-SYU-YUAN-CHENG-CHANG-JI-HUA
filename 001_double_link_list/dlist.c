@@ -19,15 +19,16 @@ struct Dlist {
 Dlist *new();
 void delete(Dlist *this);
 Node *new_node(int data);
+int get_data(Node this);
 void print_list(Dlist *this);
 Node *search(Dlist *this, int target);
 void insert_first(Dlist *this, Node *new);
 void insert_last(Dlist *this, Node *new);
 void insert_after(Dlist *this, Node *node, Node *new);
 void insert_before(Dlist *this, Node *node, Node *new);
-void remove_first(Dlist *this);
-void remove_last(Dlist *this);
-void remove_node(Dlist *this, Node *node);
+Node remove_first(Dlist *this);
+Node remove_last(Dlist *this);
+Node remove_node(Dlist *this, Node *node);
 
 int main () {
     Dlist *d = new();
@@ -46,14 +47,14 @@ int main () {
     insert_before(d, search(d, 1), new_node(8));
     insert_before(d, search(d, 3), new_node(9));
     print_list(d);
-    remove_first(d);
-    remove_first(d);
+    printf("remove: %d\n", get_data(remove_first(d)));
+    printf("remove: %d\n", get_data(remove_first(d)));
     print_list(d);
-    remove_last(d);
-    remove_last(d);
+    printf("remove: %d\n", get_data(remove_last(d)));
+    printf("remove: %d\n", get_data(remove_last(d)));
     print_list(d);
-    remove_node(d, search(d, 1));
-    remove_node(d, search(d, 3));
+    printf("remove: %d\n", get_data(remove_node(d, search(d, 1))));
+    printf("remove: %d\n", get_data(remove_node(d, search(d, 3))));
     print_list(d);
     delete(d);
 }
@@ -87,6 +88,10 @@ Node *new_node(int data) {
     ret->pre = NULL;
     ret->nxt = NULL;
     return ret;
+}
+
+int get_data(Node this) {
+    return this.data;
 }
 
 Node *search(Dlist *this, int target) {
@@ -184,43 +189,52 @@ void insert_before(Dlist *this, Node *node, Node *new) {
     }
 }
 
-void remove_first(Dlist *this) {
+Node remove_first(Dlist *this) {
     if (this == NULL || this->head == NULL || this->head->nxt == NULL) {
-        return;
+        Node n = {-1};
+        return n;
     }
     this->size--;
     Node *rm = this->head;
+    Node ret = *(this->head);
     this->head->nxt->pre = NULL;
     this->head = this->head->nxt;
     free(rm);
     rm = NULL;
+    return ret;
 }
 
-void remove_last(Dlist *this) {
+Node remove_last(Dlist *this) {
     if (this == NULL || this->tail == NULL || this->tail->pre == NULL) {
-        return;
+        Node n = {-1};
+        return n;
     }
     this->size--;
     Node *rm = this->tail;
+    Node ret = *(this->tail);
     this->tail->pre->nxt = NULL;
     this->tail = this->tail->pre;
     free(rm);
     rm = NULL;
+    return ret;
 }
 
-void remove_node(Dlist *this, Node *node) {
+Node remove_node(Dlist *this, Node *node) {
     if (this == NULL || node == NULL) {
-        return;
+        Node n = {-1};
+        return n;
     }
     this->size--;
     if (node->pre == NULL) {
-        remove_first(this);
+        return remove_first(this);
     } else if (node->nxt == NULL) {
-        remove_last(this);
+        return remove_last(this);
     } else {
+        Node ret = *(node);
         node->nxt->pre = node->pre;
         node->pre->nxt = node->nxt;
         free(node);
         node = NULL;
+        return ret;
     }
 }

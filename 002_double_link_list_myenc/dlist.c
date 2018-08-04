@@ -8,7 +8,7 @@ typedef struct _Node {
 } Node;
 
 struct _DList {
-    int size;
+    size_t size;
     Node *head;
     Node *tail;
 };
@@ -62,6 +62,7 @@ Status dlist_insert(DList *this, size_t index, void *data)
             new->nxt = this->head;
             this->head = new;
         }
+        this->size++;
         return OK;
     } else if (index == this->size) {
         if (this->tail == NULL) {
@@ -72,6 +73,7 @@ Status dlist_insert(DList *this, size_t index, void *data)
             new->pre = this->tail;
             this->tail = new;
         }
+        this->size++;
         return OK;
     } else if (0 < index && index < this->size) {
         Node *target = node_at(this, index);
@@ -101,4 +103,7 @@ Status dlist_append(DList *this, void *data)
 Status dlist_delete(DList *this, size_t index);
 Status dlist_get_by_index(DList *this, size_t index, void **data);
 Status dlist_set_by_index(DList *this, size_t index, void *data);
-size_t dlist_size(DList *this);
+size_t dlist_size(DList *this)
+{
+    return this->size;
+}

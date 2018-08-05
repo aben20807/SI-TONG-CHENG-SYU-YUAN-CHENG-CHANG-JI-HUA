@@ -50,35 +50,17 @@ DList *dlist_create(void)
 
 Status dlist_insert(DList *this, size_t index, void *data)
 {
-    Node *new = node_create(data);
-    if (new == NULL) {
+    if (this == NULL || data == NULL) {
         return ERR;
     }
     if (index == 0) {
-        if (this->head == NULL) {
-            this->head = new;
-            this->tail = this->head;
-        } else {
-            this->head->pre = new;
-            new->nxt = this->head;
-            this->head = new;
-        }
-        this->size++;
-        return OK;
+        return dlist_prepend(this, data);
     } else if (index == this->size) {
-        if (this->tail == NULL) {
-            this->tail = new;
-            this->head = this->head;
-        } else {
-            this->tail->nxt = new;
-            new->pre = this->tail;
-            this->tail = new;
-        }
-        this->size++;
-        return OK;
+        return dlist_append(this, data);
     } else if (0 < index && index < this->size) {
+        Node *new = node_create(data);
         Node *target = node_at(this, index);
-        if (target != NULL) {
+        if (target != NULL && new != NULL) {
             target->pre->nxt = new;
             new->pre = target->pre;
             new->nxt = target;
@@ -86,19 +68,44 @@ Status dlist_insert(DList *this, size_t index, void *data)
             this->size++;
             return OK;
         }
-    } else {
-        return ERR;
     }
+    return ERR;
 }
 
 Status dlist_prepend(DList *this, void *data)
 {
-    return dlist_insert(this, 0, data);
+    Node *new = node_create(data);
+    if (this == NULL || data == NULL || new == NULL) {
+        return ERR;
+    }
+    if (this->head == NULL) {
+        this->head = new;
+        this->tail = this->head;
+    } else {
+        this->head->pre = new;
+        new->nxt = this->head;
+        this->head = new;
+    }
+    this->size++;
+    return OK;
 }
 
 Status dlist_append(DList *this, void *data)
 {
-    return dlist_insert(this, this->size, data);
+    Node *new = node_create(data);
+    if (this == NULL || data == NULL || new == NULL) {
+        return ERR;
+    }
+    if (this->tail == NULL) {
+        this->tail = new;
+        this->head = this->head;
+    } else {
+        this->tail->nxt = new;
+        new->pre = this->tail;
+        this->tail = new;
+    }
+    this->size++;
+    return OK;
 }
 
 Status dlist_delete(DList *this, size_t index);
@@ -116,13 +123,11 @@ void dlist_print(const DList *this) {
     printf("size: %d, list: ", this->size);
     Node *cur = this->head;
     if (cur != NULL) {
-        int *tmp = (int *)(cur->data);
-        printf("%d", *tmp);
+        printf("%d", *((int *)(cur->data)));
         cur = cur->nxt;
     }
     while (cur != NULL) {
-        int *tmp = (int *)(cur->data);
-        printf(" - %d", *tmp);
+        printf(" - %d", *((int *)(cur->data)));
         cur = cur->nxt;
     }
     printf("\n");

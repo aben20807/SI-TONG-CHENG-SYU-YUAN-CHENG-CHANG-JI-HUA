@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "dlist.h"
 
@@ -103,7 +104,26 @@ Status dlist_append(DList *this, void *data)
 Status dlist_delete(DList *this, size_t index);
 Status dlist_get_by_index(DList *this, size_t index, void **data);
 Status dlist_set_by_index(DList *this, size_t index, void *data);
-size_t dlist_size(DList *this)
+size_t dlist_size(const DList *this)
 {
     return this->size;
+}
+
+void dlist_print(const DList *this) {
+    if (this == NULL) {
+        return;
+    }
+    printf("size: %d, list: ", this->size);
+    Node *cur = this->head;
+    if (cur != NULL) {
+        int *tmp = (int *)(cur->data);
+        printf("%d", *tmp);
+        cur = cur->nxt;
+    }
+    while (cur != NULL) {
+        int *tmp = (int *)(cur->data);
+        printf(" - %d", *tmp);
+        cur = cur->nxt;
+    }
+    printf("\n");
 }

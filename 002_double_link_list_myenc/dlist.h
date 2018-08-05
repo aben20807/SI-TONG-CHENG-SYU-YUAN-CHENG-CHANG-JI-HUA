@@ -13,6 +13,7 @@ Status dlist_append(DList *this, void *data);
 Status dlist_delete(DList *this, size_t index);
 Status dlist_get_by_index(DList *this, size_t index, void **data);
 Status dlist_set_by_index(DList *this, size_t index, void *data);
-size_t dlist_size(DList *this);
+size_t dlist_size(const DList *this);
+void dlist_print(const DList *this);
 
 #endif

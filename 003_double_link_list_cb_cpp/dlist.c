@@ -158,18 +158,18 @@ size_t dlist_size(const DList *thiz)
     return thiz->size;
 }
 
-void dlist_print(const DList *thiz) {
+void dlist_print(const DList *thiz, DListPrintFunc print) {
     if (thiz == NULL) {
         return;
     }
     printf("size: %d, list: ", thiz->size);
     Node *cur = thiz->head;
     if (cur != NULL) {
-        printf("%d", *((int *)(cur->data)));
+        print((cur->data), true);
         cur = cur->nxt;
     }
     while (cur != NULL) {
-        printf(" - %d", *((int *)(cur->data)));
+        print((cur->data), false);
         cur = cur->nxt;
     }
     printf("\n");

@@ -2,6 +2,7 @@
 #define _DLIST_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -9,6 +10,7 @@ extern "C" {
 
 typedef struct _DList DList;
 typedef enum {OK, ERR} DListRet;
+typedef DListRet (*DListPrintFunc)(void *data, bool is_first);
 
 DList *dlist_create(void);
 DListRet dlist_insert(DList *thiz, size_t index, void *data);
@@ -18,7 +20,7 @@ DListRet dlist_delete(DList *thiz, size_t index);
 DListRet dlist_get_by_index(DList *thiz, size_t index, void **data);
 DListRet dlist_set_by_index(DList *thiz, size_t index, void *data);
 size_t dlist_size(const DList *thiz);
-void dlist_print(const DList *thiz);
+void dlist_print(const DList *thiz, DListPrintFunc print);
 
 #ifdef __cplusplus
 }

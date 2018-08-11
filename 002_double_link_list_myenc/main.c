@@ -42,5 +42,19 @@ int main(int argc, char *argv[]){
 
     dlist_delete(d, 0);
     dlist_print(d);
+
+    void *data7;
+    dlist_get_by_index(d, 0, &data7);
+    printf("%d\n", *(int *)data7);
+
+    dlist_get_by_index(d, 2, &data7);
+    printf("%d\n", *(int *)data7);
+
+    int data8 = 8;
+    dlist_set_by_index(d, 0, &data8);
+    dlist_print(d);
+
+    dlist_set_by_index(d, 2, &data8);
+    dlist_print(d);
     return 0;
 }

@@ -126,8 +126,33 @@ Status dlist_delete(DList *this, size_t index)
     }
     return ERR;
 }
-Status dlist_get_by_index(DList *this, size_t index, void **data);
-Status dlist_set_by_index(DList *this, size_t index, void *data);
+
+Status dlist_get_by_index(DList *this, size_t index, void **data)
+{
+    if (this == NULL) {
+        return ERR;
+    }
+    Node *target = node_at(this, index);
+    if (target != NULL) {
+        *data = target->data;
+        return OK;
+    }
+    return ERR;
+}
+
+Status dlist_set_by_index(DList *this, size_t index, void *data)
+{
+    if (this == NULL) {
+        return ERR;
+    }
+    Node *target = node_at(this, index);
+    if (target != NULL) {
+        target->data = data;
+        return OK;
+    }
+    return ERR;
+}
+
 size_t dlist_size(const DList *this)
 {
     return this->size;

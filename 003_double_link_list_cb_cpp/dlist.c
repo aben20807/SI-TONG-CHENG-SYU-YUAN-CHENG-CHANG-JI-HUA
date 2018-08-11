@@ -48,7 +48,7 @@ DList *dlist_create(void)
     return ret;
 }
 
-Status dlist_insert(DList *thiz, size_t index, void *data)
+DListRet dlist_insert(DList *thiz, size_t index, void *data)
 {
     Node *new = node_create(data);
     if (thiz == NULL || data == NULL || new == NULL) {
@@ -91,17 +91,17 @@ Status dlist_insert(DList *thiz, size_t index, void *data)
     }
 }
 
-Status dlist_prepend(DList *thiz, void *data)
+DListRet dlist_prepend(DList *thiz, void *data)
 {
     return dlist_insert(thiz, 0, data);
 }
 
-Status dlist_append(DList *thiz, void *data)
+DListRet dlist_append(DList *thiz, void *data)
 {
     return dlist_insert(thiz, thiz->size, data);
 }
 
-Status dlist_delete(DList *thiz, size_t index)
+DListRet dlist_delete(DList *thiz, size_t index)
 {
     if (thiz == NULL) {
         return ERR;
@@ -127,7 +127,7 @@ Status dlist_delete(DList *thiz, size_t index)
     return ERR;
 }
 
-Status dlist_get_by_index(DList *thiz, size_t index, void **data)
+DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
     if (thiz == NULL) {
         return ERR;
@@ -140,7 +140,7 @@ Status dlist_get_by_index(DList *thiz, size_t index, void **data)
     return ERR;
 }
 
-Status dlist_set_by_index(DList *thiz, size_t index, void *data)
+DListRet dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
     if (thiz == NULL) {
         return ERR;

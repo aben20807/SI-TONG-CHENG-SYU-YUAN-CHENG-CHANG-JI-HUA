@@ -23,12 +23,12 @@ static Node *node_create(void *data)
     return ret;
 }
 
-static Node *node_at(DList *this, const int index)
+static Node *node_at(DList *thiz, const int index)
 {
-    if (this == NULL || 0 > index || index >= this->size) {
+    if (thiz == NULL || 0 > index || index >= thiz->size) {
         return NULL;
     }
-    Node *itr = this->head;
+    Node *itr = thiz->head;
     int cnt = 0;
     while (itr != NULL) {
         if (cnt++ == index) {
@@ -48,42 +48,42 @@ DList *dlist_create(void)
     return ret;
 }
 
-Status dlist_insert(DList *this, size_t index, void *data)
+Status dlist_insert(DList *thiz, size_t index, void *data)
 {
     Node *new = node_create(data);
-    if (this == NULL || data == NULL || new == NULL) {
+    if (thiz == NULL || data == NULL || new == NULL) {
         return ERR;
     }
     if (index == 0) {
-        if (this->head == NULL) {
-            this->head = new;
-            this->tail = this->head;
+        if (thiz->head == NULL) {
+            thiz->head = new;
+            thiz->tail = thiz->head;
         } else {
-            this->head->pre = new;
-            new->nxt = this->head;
-            this->head = new;
+            thiz->head->pre = new;
+            new->nxt = thiz->head;
+            thiz->head = new;
         }
-        this->size++;
+        thiz->size++;
         return OK;
-    } else if (index == this->size) {
-        if (this->tail == NULL) {
-            this->tail = new;
-            this->head = this->head;
+    } else if (index == thiz->size) {
+        if (thiz->tail == NULL) {
+            thiz->tail = new;
+            thiz->head = thiz->head;
         } else {
-            this->tail->nxt = new;
-            new->pre = this->tail;
-            this->tail = new;
+            thiz->tail->nxt = new;
+            new->pre = thiz->tail;
+            thiz->tail = new;
         }
-        this->size++;
+        thiz->size++;
         return OK;
-    } else if (0 < index && index < this->size) {
-        Node *target = node_at(this, index);
+    } else if (0 < index && index < thiz->size) {
+        Node *target = node_at(thiz, index);
         if (target != NULL) {
             target->pre->nxt = new;
             new->pre = target->pre;
             new->nxt = target;
             target->pre = new;
-            this->size++;
+            thiz->size++;
             return OK;
         }
     } else {
@@ -91,29 +91,29 @@ Status dlist_insert(DList *this, size_t index, void *data)
     }
 }
 
-Status dlist_prepend(DList *this, void *data)
+Status dlist_prepend(DList *thiz, void *data)
 {
-    return dlist_insert(this, 0, data);
+    return dlist_insert(thiz, 0, data);
 }
 
-Status dlist_append(DList *this, void *data)
+Status dlist_append(DList *thiz, void *data)
 {
-    return dlist_insert(this, this->size, data);
+    return dlist_insert(thiz, thiz->size, data);
 }
 
-Status dlist_delete(DList *this, size_t index)
+Status dlist_delete(DList *thiz, size_t index)
 {
-    if (this == NULL) {
+    if (thiz == NULL) {
         return ERR;
     }
-    Node *target = node_at(this, index);
+    Node *target = node_at(thiz, index);
     if (target != NULL) {
         if (target->pre == NULL) {
             target->nxt->pre = NULL;
-            this->head = target->nxt;
+            thiz->head = target->nxt;
         } else if (target->nxt == NULL) {
             target->pre->nxt = NULL;
-            this->tail = target->pre;
+            thiz->tail = target->pre;
         } else {
             Node ret = *(target);
             target->nxt->pre = target->pre;
@@ -121,18 +121,18 @@ Status dlist_delete(DList *this, size_t index)
         }
         free(target);
         target = NULL;
-        this->size--;
+        thiz->size--;
         return OK;
     }
     return ERR;
 }
 
-Status dlist_get_by_index(DList *this, size_t index, void **data)
+Status dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
-    if (this == NULL) {
+    if (thiz == NULL) {
         return ERR;
     }
-    Node *target = node_at(this, index);
+    Node *target = node_at(thiz, index);
     if (target != NULL) {
         *data = target->data;
         return OK;
@@ -140,12 +140,12 @@ Status dlist_get_by_index(DList *this, size_t index, void **data)
     return ERR;
 }
 
-Status dlist_set_by_index(DList *this, size_t index, void *data)
+Status dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
-    if (this == NULL) {
+    if (thiz == NULL) {
         return ERR;
     }
-    Node *target = node_at(this, index);
+    Node *target = node_at(thiz, index);
     if (target != NULL) {
         target->data = data;
         return OK;
@@ -153,17 +153,17 @@ Status dlist_set_by_index(DList *this, size_t index, void *data)
     return ERR;
 }
 
-size_t dlist_size(const DList *this)
+size_t dlist_size(const DList *thiz)
 {
-    return this->size;
+    return thiz->size;
 }
 
-void dlist_print(const DList *this) {
-    if (this == NULL) {
+void dlist_print(const DList *thiz) {
+    if (thiz == NULL) {
         return;
     }
-    printf("size: %d, list: ", this->size);
-    Node *cur = this->head;
+    printf("size: %d, list: ", thiz->size);
+    Node *cur = thiz->head;
     if (cur != NULL) {
         printf("%d", *((int *)(cur->data)));
         cur = cur->nxt;

@@ -30,5 +30,17 @@ int main(int argc, char *argv[]){
     int data6 = 6;
     dlist_insert(d, 3, &data6);
     dlist_print(d);
+
+    dlist_delete(d, 2);
+    dlist_print(d);
+
+    dlist_delete(d, 1);
+    dlist_print(d);
+
+    dlist_delete(d, 11);
+    dlist_print(d);
+
+    dlist_delete(d, 0);
+    dlist_print(d);
     return 0;
 }

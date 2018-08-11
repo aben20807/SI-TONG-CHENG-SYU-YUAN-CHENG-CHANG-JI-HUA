@@ -25,7 +25,7 @@ static Node *node_create(void *data)
 
 static Node *node_at(DList *this, const int index)
 {
-    if (this == NULL || index >= this->size) {
+    if (this == NULL || 0 > index || index >= this->size) {
         return NULL;
     }
     Node *itr = this->head;
@@ -101,7 +101,31 @@ Status dlist_append(DList *this, void *data)
     return dlist_insert(this, this->size, data);
 }
 
-Status dlist_delete(DList *this, size_t index);
+Status dlist_delete(DList *this, size_t index)
+{
+    if (this == NULL) {
+        return ERR;
+    }
+    Node *target = node_at(this, index);
+    if (target != NULL) {
+        if (target->pre == NULL) {
+            target->nxt->pre = NULL;
+            this->head = target->nxt;
+        } else if (target->nxt == NULL) {
+            target->pre->nxt = NULL;
+            this->tail = target->pre;
+        } else {
+            Node ret = *(target);
+            target->nxt->pre = target->pre;
+            target->pre->nxt = target->nxt;
+        }
+        free(target);
+        target = NULL;
+        this->size--;
+        return OK;
+    }
+    return ERR;
+}
 Status dlist_get_by_index(DList *this, size_t index, void **data);
 Status dlist_set_by_index(DList *this, size_t index, void *data);
 size_t dlist_size(const DList *this)

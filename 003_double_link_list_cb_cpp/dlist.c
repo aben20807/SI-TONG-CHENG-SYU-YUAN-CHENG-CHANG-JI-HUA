@@ -17,10 +17,22 @@ struct _DList {
 static Node *node_create(void *data)
 {
     Node *ret = malloc(sizeof(Node));
-    ret->data = data;
-    ret->pre = NULL;
-    ret->nxt = NULL;
+    if (ret != NULL) {
+        ret->data = data;
+        ret->pre = NULL;
+        ret->nxt = NULL;
+    }
     return ret;
+}
+
+static void node_destroy(Node *node)
+{
+    if (node != NULL) {
+        node->pre = NULL;
+        node->nxt = NULL;
+        free(node);
+        node = NULL;
+    }
 }
 
 static Node *node_at(DList *thiz, const int index)
@@ -57,9 +69,7 @@ void dlist_destroy(DList* thiz)
     Node *next = NULL;
     while (itr != NULL) {
         next = itr->nxt;
-        itr->pre = NULL;
-        itr->nxt = NULL;
-        free(itr);
+        node_destroy(itr);
         itr = next;
     }
 }
@@ -131,8 +141,7 @@ DListRet dlist_delete(DList *thiz, size_t index)
             target->nxt->pre = target->pre;
             target->pre->nxt = target->nxt;
         }
-        free(target);
-        target = NULL;
+        node_destroy(target);
         thiz->size--;
         return OK;
     }

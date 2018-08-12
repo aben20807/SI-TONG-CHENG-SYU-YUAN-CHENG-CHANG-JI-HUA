@@ -65,5 +65,7 @@ int main(int argc, char *argv[]){
 
     dlist_set_by_index(d, 2, &data8);
     dlist_print(d, print_int);
+
+    dlist_destroy(d);
     return 0;
 }

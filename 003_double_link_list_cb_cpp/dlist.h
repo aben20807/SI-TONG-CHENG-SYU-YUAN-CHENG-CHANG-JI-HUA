@@ -13,6 +13,7 @@ typedef enum {OK, ERR} DListRet;
 typedef DListRet (*DListPrintFunc)(void *data, bool is_first);
 
 DList *dlist_create(void);
+void dlist_destroy(DList* thiz);
 DListRet dlist_insert(DList *thiz, size_t index, void *data);
 DListRet dlist_prepend(DList *thiz, void *data);
 DListRet dlist_append(DList *thiz, void *data);

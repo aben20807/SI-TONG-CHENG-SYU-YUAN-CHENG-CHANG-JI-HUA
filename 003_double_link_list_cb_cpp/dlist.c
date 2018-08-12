@@ -48,6 +48,22 @@ DList *dlist_create(void)
     return ret;
 }
 
+void dlist_destroy(DList* thiz)
+{
+    if (thiz == NULL) {
+        return;
+    }
+    Node *itr = thiz->head;
+    Node *next = NULL;
+    while (itr != NULL) {
+        next = itr->nxt;
+        itr->pre = NULL;
+        itr->nxt = NULL;
+        free(itr);
+        itr = next;
+    }
+}
+
 DListRet dlist_insert(DList *thiz, size_t index, void *data)
 {
     Node *new = node_create(data);

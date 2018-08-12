@@ -54,29 +54,27 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
     if (thiz == NULL || data == NULL || new == NULL) {
         return ERR;
     }
+    if (index == 0 && thiz->size == 0) {
+        thiz->head = new;
+        thiz->tail = new;
+        thiz->size++;
+        return OK;
+    }
     if (index == 0) {
-        if (thiz->head == NULL) {
-            thiz->head = new;
-            thiz->tail = thiz->head;
-        } else {
-            thiz->head->pre = new;
-            new->nxt = thiz->head;
-            thiz->head = new;
-        }
+        thiz->head->pre = new;
+        new->nxt = thiz->head;
+        thiz->head = new;
         thiz->size++;
         return OK;
-    } else if (index == thiz->size) {
-        if (thiz->tail == NULL) {
-            thiz->tail = new;
-            thiz->head = thiz->head;
-        } else {
-            thiz->tail->nxt = new;
-            new->pre = thiz->tail;
-            thiz->tail = new;
-        }
+    }
+    if (index == thiz->size) {
+        thiz->tail->nxt = new;
+        new->pre = thiz->tail;
+        thiz->tail = new;
         thiz->size++;
         return OK;
-    } else if (0 < index && index < thiz->size) {
+    }
+    if (0 < index && index < thiz->size) {
         Node *target = node_at(thiz, index);
         if (target != NULL) {
             target->pre->nxt = new;
@@ -86,9 +84,8 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
             thiz->size++;
             return OK;
         }
-    } else {
-        return ERR;
     }
+    return ERR;
 }
 
 DListRet dlist_prepend(DList *thiz, void *data)
@@ -115,7 +112,6 @@ DListRet dlist_delete(DList *thiz, size_t index)
             target->pre->nxt = NULL;
             thiz->tail = target->pre;
         } else {
-            Node ret = *(target);
             target->nxt->pre = target->pre;
             target->pre->nxt = target->nxt;
         }

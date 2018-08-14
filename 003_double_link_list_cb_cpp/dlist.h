@@ -11,6 +11,7 @@ extern "C" {
 typedef struct _DList DList;
 typedef enum {OK, ERR} DListRet;
 typedef DListRet (*DListPrintFunc)(void *data, bool is_first);
+typedef DListRet (*DListVisitFunc)(void *ctx, void *data);
 
 DList *dlist_create(void);
 void dlist_destroy(DList* thiz);
@@ -22,6 +23,7 @@ DListRet dlist_get_by_index(DList *thiz, size_t index, void **data);
 DListRet dlist_set_by_index(DList *thiz, size_t index, void *data);
 size_t dlist_size(const DList *thiz);
 void dlist_print(const DList *thiz, DListPrintFunc print);
+DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx);
 
 #ifdef __cplusplus
 }

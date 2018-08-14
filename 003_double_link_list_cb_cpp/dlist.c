@@ -195,3 +195,16 @@ void dlist_print(const DList *thiz, DListPrintFunc print) {
     }
     printf("\n");
 }
+
+DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
+{
+    if (thiz == NULL) {
+        return ERR;
+    }
+    Node *itr = thiz->head;
+    while (itr != NULL) {
+        visit(ctx, itr->data);
+        itr = itr->nxt;
+    }
+    return OK;
+}

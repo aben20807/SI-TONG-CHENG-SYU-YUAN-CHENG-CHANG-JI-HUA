@@ -10,6 +10,13 @@ DListRet print_int(void *data, bool is_first)
     }
 }
 
+DListRet sum_cb(void *ctx, void *data)
+{
+    long long *result = (long long *)ctx;
+    *result += *(int *)data;
+    return OK;
+}
+
 int main(int argc, char *argv[]){
 
     printf("OuO\n");
@@ -65,6 +72,10 @@ int main(int argc, char *argv[]){
 
     dlist_set_by_index(d, 2, &data8);
     dlist_print(d, print_int);
+
+    long long sum = 0;
+    dlist_foreach(d, sum_cb, &sum);
+    printf("sum: %lld\n", sum);
 
     dlist_destroy(d);
     return 0;

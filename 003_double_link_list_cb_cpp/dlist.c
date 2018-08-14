@@ -179,23 +179,6 @@ size_t dlist_size(const DList *thiz)
     return thiz->size;
 }
 
-void dlist_print(const DList *thiz, DListPrintFunc print) {
-    if (thiz == NULL) {
-        return;
-    }
-    printf("size: %d, list: ", thiz->size);
-    Node *cur = thiz->head;
-    if (cur != NULL) {
-        print((cur->data), true);
-        cur = cur->nxt;
-    }
-    while (cur != NULL) {
-        print((cur->data), false);
-        cur = cur->nxt;
-    }
-    printf("\n");
-}
-
 DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
     if (thiz == NULL) {

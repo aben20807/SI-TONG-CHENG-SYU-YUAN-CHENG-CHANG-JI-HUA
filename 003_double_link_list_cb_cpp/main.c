@@ -12,9 +12,6 @@ DListRet print_int(void *ctx, void *data, bool is_first)
 }
 
 void print(DList *thiz) {
-    if (thiz == NULL) {
-        return;
-    }
     printf("size: %d, list: ", dlist_size(thiz));
     dlist_foreach(thiz, print_int, NULL);
     printf("\n");
@@ -72,9 +69,9 @@ int main(int argc, char *argv[]){
     dlist_foreach(d, sum_cb, &sum);
     printf("sum: %lld\n", sum);
 
-    int max;
-    dlist_foreach(d, max_cb, &max);
-    printf("max: %d\n", max);
+    int mmax;
+    dlist_foreach(d, max_cb, &mmax);
+    printf("max: %d\n", mmax);
 
     dlist_delete(d, 2);
     print(d);

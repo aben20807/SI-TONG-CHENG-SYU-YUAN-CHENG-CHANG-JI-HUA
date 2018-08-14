@@ -25,13 +25,13 @@ static Node *node_create(void *data)
     return ret;
 }
 
-static void node_destroy(Node *node)
+static void node_destroy(Node **node)
 {
-    if (node != NULL) {
-        node->pre = NULL;
-        node->nxt = NULL;
-        free(node);
-        node = NULL;
+    if (*node != NULL) {
+        (*node)->pre = NULL;
+        (*node)->nxt = NULL;
+        free(*node);
+        *node = NULL;
     }
 }
 
@@ -69,7 +69,7 @@ void dlist_destroy(DList* thiz)
     Node *next = NULL;
     while (itr != NULL) {
         next = itr->nxt;
-        node_destroy(itr);
+        node_destroy(&itr);
         itr = next;
     }
 }
@@ -141,7 +141,7 @@ DListRet dlist_delete(DList *thiz, size_t index)
             target->nxt->pre = target->pre;
             target->pre->nxt = target->nxt;
         }
-        node_destroy(target);
+        node_destroy(&target);
         thiz->size--;
         return OK;
     }

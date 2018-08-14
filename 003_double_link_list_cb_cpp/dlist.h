@@ -11,7 +11,7 @@ extern "C" {
 typedef struct _DList DList;
 typedef enum {OK, ERR} DListRet;
 typedef DListRet (*DListPrintFunc)(void *data, bool is_first);
-typedef DListRet (*DListVisitFunc)(void *ctx, void *data);
+typedef DListRet (*DListVisitFunc)(void *ctx, void *data, bool is_first);
 
 DList *dlist_create(void);
 void dlist_destroy(DList* thiz);

@@ -202,8 +202,12 @@ DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
         return ERR;
     }
     Node *itr = thiz->head;
+    if (itr != NULL) {
+        visit(ctx, itr->data, true);
+        itr = itr->nxt;
+    }
     while (itr != NULL) {
-        visit(ctx, itr->data);
+        visit(ctx, itr->data, false);
         itr = itr->nxt;
     }
     return OK;

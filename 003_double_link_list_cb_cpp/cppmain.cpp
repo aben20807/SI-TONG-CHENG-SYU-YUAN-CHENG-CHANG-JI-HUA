@@ -11,12 +11,24 @@ DListRet print_int(void *data, bool is_first)
     }
 }
 
-DListRet sum_cb(void *ctx, void *data)
+DListRet sum_cb(void *ctx, void *data, bool is_first)
 {
     long long *result = (long long *)ctx;
     *result += *(int *)data;
     return OK;
 }
+
+DListRet max_cb(void *ctx, void *data, bool is_first)
+{
+    int *result = (int *)ctx;
+    if (is_first) {
+        *result = *(int *)data;
+    } else {
+        *result = (*result > *(int *)data)? *result: *(int *)data;
+    }
+    return OK;
+}
+
 
 int main()
 {
@@ -48,6 +60,14 @@ int main()
     dlist_insert(d, 3, &data6);
     dlist_print(d, print_int);
 
+    long long sum = 0;
+    dlist_foreach(d, sum_cb, &sum);
+    printf("sum: %lld\n", sum);
+
+    int max;
+    dlist_foreach(d, max_cb, &max);
+    printf("max: %d\n", max);
+
     dlist_delete(d, 2);
     dlist_print(d, print_int);
 
@@ -73,10 +93,6 @@ int main()
 
     dlist_set_by_index(d, 2, &data8);
     dlist_print(d, print_int);
-
-    long long sum = 0;
-    dlist_foreach(d, sum_cb, &sum);
-    printf("sum: %lld\n", sum);
 
     dlist_destroy(d);
     return 0;

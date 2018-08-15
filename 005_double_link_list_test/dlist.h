@@ -23,6 +23,17 @@ DListRet dlist_set_by_index(DList *thiz, size_t index, void *data);
 size_t dlist_size(const DList *thiz);
 DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx);
 
+#define return_if_fail(p) \
+    if(!(p)) { \
+        printf("%s:%d Warning: "#p" failed.\n", __func__, __LINE__); \
+        return; \
+    }
+#define return_val_if_fail(p, ret) \
+    if(!(p)) { \
+        printf("%s:%d Warning: "#p" failed.\n", __func__, __LINE__); \
+        return (ret); \
+    }
+
 #ifdef __cplusplus
 }
 #endif

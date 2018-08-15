@@ -195,3 +195,14 @@ DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
     }
     return OK;
 }
+
+#ifdef DLIST_TEST
+
+#include <assert.h>
+
+int main(){
+
+    return 0;
+}
+
+#endif

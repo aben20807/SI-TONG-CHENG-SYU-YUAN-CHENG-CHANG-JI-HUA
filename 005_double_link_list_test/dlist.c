@@ -38,9 +38,6 @@ static void node_destroy(Node **node)
 static Node *node_at(DList *thiz, const int index)
 {
     return_val_if_fail(thiz != NULL && 0 <= index && index < thiz->size, NULL);
-    // if (thiz == NULL || 0 > index || index >= thiz->size) {
-    //     return NULL;
-    // }
     Node *itr = thiz->head;
     int cnt = 0;
     while (itr != NULL) {
@@ -64,9 +61,6 @@ DList *dlist_create(void)
 void dlist_destroy(DList* thiz)
 {
     return_if_fail(thiz != NULL);
-    // if (thiz == NULL) {
-    //     return;
-    // }
     Node *itr = thiz->head;
     Node *next = NULL;
     while (itr != NULL) {
@@ -81,11 +75,6 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
     return_val_if_fail(thiz != NULL && data != NULL, ERR);
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, ERR);
-    // if (thiz == NULL || data == NULL || new == NULL) {
-    // if (new == NULL) {
-    //     node_destroy(&new);
-    //     return ERR;
-    // }
     if (index == 0 && thiz->size == 0) {
         thiz->head = new;
         thiz->tail = new;
@@ -134,9 +123,6 @@ DListRet dlist_append(DList *thiz, void *data)
 DListRet dlist_delete(DList *thiz, size_t index)
 {
     return_val_if_fail(thiz != NULL, ERR);
-    // if (thiz == NULL) {
-    //     return ERR;
-    // }
     Node *target = node_at(thiz, index);
     if (target != NULL) {
         if (target->pre == NULL) {
@@ -159,9 +145,6 @@ DListRet dlist_delete(DList *thiz, size_t index)
 DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
     return_val_if_fail(thiz != NULL, ERR);
-    // if (thiz == NULL) {
-    //     return ERR;
-    // }
     Node *target = node_at(thiz, index);
     if (target != NULL) {
         *data = target->data;
@@ -173,9 +156,6 @@ DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
 DListRet dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
     return_val_if_fail(thiz != NULL, ERR);
-    // if (thiz == NULL) {
-    //     return ERR;
-    // }
     Node *target = node_at(thiz, index);
     if (target != NULL) {
         target->data = data;
@@ -192,9 +172,6 @@ size_t dlist_size(const DList *thiz)
 DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
     return_val_if_fail(thiz != NULL, ERR);
-    // if (thiz == NULL) {
-    //     return ERR;
-    // }
     Node *itr = thiz->head;
     if (itr != NULL) {
         visit(ctx, itr->data, true);

@@ -65,6 +65,9 @@ int main(int argc, char *argv[]){
     dlist_insert(d, 3, &data6);
     print(d);
 
+    dlist_insert(d, 33, &data6);
+    print(d);
+
     long long sum = 0;
     dlist_foreach(d, sum_cb, &sum);
     printf("sum: %lld\n", sum);

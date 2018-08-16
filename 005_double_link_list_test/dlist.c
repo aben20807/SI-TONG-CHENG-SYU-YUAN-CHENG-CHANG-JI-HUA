@@ -78,6 +78,7 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
 {
     Node *new = node_create(data);
     if (thiz == NULL || data == NULL || new == NULL) {
+        node_destroy(&new);
         return ERR;
     }
     if (index == 0 && thiz->size == 0) {
@@ -111,6 +112,7 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
             return OK;
         }
     }
+    node_destroy(&new);
     return ERR;
 }
 

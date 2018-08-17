@@ -16,7 +16,7 @@ struct _DList {
 
 static Node *node_create(void *data)
 {
-    Node *ret = malloc(sizeof(Node));
+    Node *ret = calloc(1, sizeof(Node));
     if (ret != NULL) {
         ret->data = data;
         ret->pre = NULL;
@@ -37,9 +37,9 @@ static void node_destroy(Node *node)
 static Node *node_at(DList *thiz, const int index)
 {
     return_val_if_fail(thiz != NULL && 0 <= index && index < thiz->size, NULL);
-    Node *itr = thiz->head;
+    Node *itr = thiz->head->nxt;
     int cnt = 0;
-    while (itr != NULL) {
+    while (itr != thiz->tail) {
         if (cnt++ == index) {
             return itr;
         }
@@ -50,19 +50,21 @@ static Node *node_at(DList *thiz, const int index)
 
 DList *dlist_create(void)
 {
-    DList *ret = malloc(sizeof(DList));
+    DList *ret = calloc(1, sizeof(DList));
     ret->size = 0;
-    ret->head = NULL;
-    ret->tail = NULL;
+    ret->head = calloc(1, sizeof(Node));
+    ret->tail = calloc(1, sizeof(Node));
+    ret->head->nxt = ret->tail;
+    ret->tail->pre = ret->head;
     return ret;
 }
 
 void dlist_destroy(DList* thiz)
 {
     return_if_fail(thiz != NULL);
-    Node *itr = thiz->head;
+    Node *itr = thiz->head->nxt;
     Node *next = NULL;
-    while (itr != NULL) {
+    while (itr != thiz->tail) {
         next = itr->nxt;
         node_destroy(itr);
         itr = next;
@@ -75,36 +77,22 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
     return_val_if_fail(thiz != NULL && data != NULL, ERR);
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, ERR);
-    if (index == 0 && thiz->size == 0) {
-        thiz->head = new;
-        thiz->tail = new;
-        thiz->size++;
-        return OK;
-    }
-    if (index == 0) {
-        thiz->head->pre = new;
-        new->nxt = thiz->head;
-        thiz->head = new;
-        thiz->size++;
-        return OK;
-    }
+    Node *target = NULL;
     if (index == thiz->size) {
-        thiz->tail->nxt = new;
-        new->pre = thiz->tail;
-        thiz->tail = new;
+        target = thiz->tail;
+    } else if (0 <= index && index < thiz->size) {
+        target = node_at(thiz, index);
+    } else {
+        node_destroy(new);
+        return ERR;
+    }
+    if (target != NULL) {
+        target->pre->nxt = new;
+        new->pre = target->pre;
+        new->nxt = target;
+        target->pre = new;
         thiz->size++;
         return OK;
-    }
-    if (0 < index && index < thiz->size) {
-        Node *target = node_at(thiz, index);
-        if (target != NULL) {
-            target->pre->nxt = new;
-            new->pre = target->pre;
-            new->nxt = target;
-            target->pre = new;
-            thiz->size++;
-            return OK;
-        }
     }
     node_destroy(new);
     return ERR;
@@ -172,12 +160,12 @@ size_t dlist_size(const DList *thiz)
 DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
     return_val_if_fail(thiz != NULL, ERR);
-    Node *itr = thiz->head;
-    if (itr != NULL) {
+    Node *itr = thiz->head->nxt;
+    if (itr != thiz->tail) {
         visit(ctx, itr->data, true);
         itr = itr->nxt;
     }
-    while (itr != NULL) {
+    while (itr != thiz->tail) {
         visit(ctx, itr->data, false);
         itr = itr->nxt;
     }
@@ -188,8 +176,70 @@ DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 
 #include <assert.h>
 
-int main(){
+DListRet print_int(void *ctx, void *data, bool is_first)
+{
+    if (is_first) {
+        printf("%d", *(int *)data);
+    } else {
+        printf(" - %d", *(int *)data);
+    }
+    return OK;
+}
 
+void print(DList *thiz) {
+    printf("size: %d, list: ", dlist_size(thiz));
+    dlist_foreach(thiz, print_int, NULL);
+    printf("\n");
+}
+
+void test_int_dlist()
+{
+    int n = 10;
+    void *data = NULL;
+
+    DList* d = dlist_create();
+    assert(dlist_size(d) == 0);
+
+    /* append */
+    for(int i = 0, j = 0; i < n; i++) {
+        data = malloc(sizeof(int));
+        *(int *)data = i;
+        assert(dlist_append(d, (void *)data) == OK);
+        assert(dlist_size(d) == (i + 1));
+        assert(dlist_get_by_index(d, i, (void **)&data) == OK);
+        assert(*(int *)data == i);
+    }
+    assert(dlist_size(d) == n);
+    print(d);
+
+    for(int i = 0; i < n; i++) {
+        data = malloc(sizeof(int));
+        *(int *)data = i * 2;
+        assert(dlist_set_by_index(d, i, (void *)data) == OK);
+        assert(dlist_get_by_index(d, i, (void **)&data) == OK);
+        assert(*(int *)data == 2 * i);
+    }
+    assert(dlist_size(d) == n);
+    print(d);
+
+    for(int i = 0; i < n; i++) {
+        assert(dlist_get_by_index(d, 0, (void **)&data) == OK);
+        assert(*(int *)data == i * 2);
+        printf("%d\n", *(int *)data);
+        assert(dlist_size(d) == (n - i));
+        assert(dlist_delete(d, 0) == OK);
+        free(data);
+        print(d);
+        assert(dlist_size(d) == (n - i - 1));
+    }
+    assert(dlist_size(d) == 0);
+
+
+}
+
+int main()
+{
+    test_int_dlist();
     return 0;
 }
 

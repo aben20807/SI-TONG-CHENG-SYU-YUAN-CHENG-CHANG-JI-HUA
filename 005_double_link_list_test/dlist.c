@@ -113,16 +113,8 @@ DListRet dlist_delete(DList *thiz, size_t index)
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
     if (target != NULL) {
-        if (target->pre == NULL) {
-            target->nxt->pre = NULL;
-            thiz->head = target->nxt;
-        } else if (target->nxt == NULL) {
-            target->pre->nxt = NULL;
-            thiz->tail = target->pre;
-        } else {
-            target->nxt->pre = target->pre;
-            target->pre->nxt = target->nxt;
-        }
+        target->nxt->pre = target->pre;
+        target->pre->nxt = target->nxt;
         node_destroy(target);
         thiz->size--;
         return OK;

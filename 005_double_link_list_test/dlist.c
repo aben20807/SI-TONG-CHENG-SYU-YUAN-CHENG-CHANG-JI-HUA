@@ -135,6 +135,7 @@ DListRet dlist_set_by_index(DList *thiz, size_t index, void *data)
 
 size_t dlist_size(const DList *thiz)
 {
+    return_val_if_fail(thiz != NULL, -1);
     return thiz->size;
 }
 
@@ -156,6 +157,7 @@ DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 #ifdef DLIST_TEST
 
 #include <assert.h>
+#include <time.h>
 
 DListRet print_int(void *ctx, void *data, bool is_first)
 {
@@ -167,21 +169,36 @@ DListRet print_int(void *ctx, void *data, bool is_first)
     return OK;
 }
 
-void print(DList *thiz) {
+void print(DList *thiz)
+{
     printf("size: %d, list: ", dlist_size(thiz));
     dlist_foreach(thiz, print_int, NULL);
     printf("\n");
 }
 
+void clear(DList *thiz, int n)
+{
+    /* dlist_delete */
+    void *data = NULL;
+    for(int i = 0; i < n; i++) {
+        assert(dlist_get_by_index(thiz, 0, (void **)&data) == OK);
+        assert(dlist_size(thiz) == (n - i));
+        assert(dlist_delete(thiz, 0) == OK);
+        free(data);
+        assert(dlist_size(thiz) == (n - i - 1));
+    }
+    assert(dlist_size(thiz) == 0);
+}
+
 void test_int_dlist()
 {
-    int n = 10;
+    int n = 100;
     void *data = NULL;
 
     DList* d = dlist_create();
     assert(dlist_size(d) == 0);
 
-    /* append */
+    /* dlist_append */
     for(int i = 0, j = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i;
@@ -191,8 +208,9 @@ void test_int_dlist()
         assert(*(int *)data == i);
     }
     assert(dlist_size(d) == n);
-    print(d);
+    // print(d);
 
+    /* dlist_set_by_index */
     for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i * 2;
@@ -201,26 +219,70 @@ void test_int_dlist()
         assert(*(int *)data == 2 * i);
     }
     assert(dlist_size(d) == n);
-    print(d);
+    // print(d);
 
+    /* dlist_delete */
     for(int i = 0; i < n; i++) {
         assert(dlist_get_by_index(d, 0, (void **)&data) == OK);
         assert(*(int *)data == i * 2);
-        printf("%d\n", *(int *)data);
+        // printf("%d\n", *(int *)data);
         assert(dlist_size(d) == (n - i));
         assert(dlist_delete(d, 0) == OK);
         free(data);
-        print(d);
+        // print(d);
         assert(dlist_size(d) == (n - i - 1));
     }
     assert(dlist_size(d) == 0);
 
+    /* dlist_prepend */
+    for(int i = 0, j = 0; i < n; i++) {
+        data = malloc(sizeof(int));
+        *(int *)data = i;
+        assert(dlist_prepend(d, (void *)data) == OK);
+        assert(dlist_size(d) == (i + 1));
+        assert(dlist_get_by_index(d, 0, (void **)&data) == OK);
+        assert(*(int *)data == i);
+        // print(d);
+    }
+    assert(dlist_size(d) == n);
 
+    clear(d, n);
+    assert(dlist_size(d) == 0);
+
+    /* dlist_insert */
+    srand(time(NULL));
+    for(int i = 1, j = 0; i <= n; i++) {
+        data = malloc(sizeof(int));
+        int random = (rand() % i);
+        // printf("%d\n", random);
+        *(int *)data = i;
+        assert(dlist_insert(d, random, (void *)data) == OK);
+        assert(dlist_size(d) == (i));
+        assert(dlist_get_by_index(d, random, (void **)&data) == OK);
+        assert(*(int *)data == i);
+        // print(d);
+    }
+    assert(dlist_size(d) == n);
+}
+
+void test_err()
+{
+    printf("===========Warning is normal begin==============\n");
+	assert(dlist_size(NULL) == -1);
+	assert(dlist_prepend(NULL, 0) == ERR);
+	assert(dlist_append(NULL, 0) == ERR);
+	assert(dlist_delete(NULL, 0) == ERR);
+	assert(dlist_insert(NULL, 0, 0) == ERR);
+	assert(dlist_set_by_index(NULL, 0, NULL) == ERR);
+	assert(dlist_get_by_index(NULL, 0, NULL) == ERR);
+	assert(dlist_foreach(NULL, NULL, NULL) == ERR);
+	printf("===========Warning is normal end==============\n");
 }
 
 int main()
 {
     test_int_dlist();
+    test_err();
     return 0;
 }
 

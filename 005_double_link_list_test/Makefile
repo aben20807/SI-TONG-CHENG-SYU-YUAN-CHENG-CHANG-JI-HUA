@@ -11,6 +11,7 @@ main.o: main.c dlist.h
 
 test:
 	gcc dlist.c -g -DDLIST_TEST -o dlist_test
+	./dlist_test
 
 clean:
 	rm *.o main *.stackdump dlist_test

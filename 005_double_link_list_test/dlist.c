@@ -265,6 +265,10 @@ void test_int_dlist()
         // print(d);
     }
     assert(dlist_size(d) == n);
+
+    clear(d, n);
+    assert(dlist_size(d) == 0);
+    dlist_destroy(d);
 }
 
 void test_err()

@@ -28,8 +28,6 @@ static Node *node_create(void *data)
 static void node_destroy(Node *node)
 {
     if (node != NULL) {
-        (node)->pre = NULL;
-        (node)->nxt = NULL;
         free(node);
     }
 }
@@ -80,11 +78,8 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
     Node *target = NULL;
     if (index == thiz->size) {
         target = thiz->tail;
-    } else if (0 <= index && index < thiz->size) {
-        target = node_at(thiz, index);
     } else {
-        node_destroy(new);
-        return ERR;
+        target = node_at(thiz, index);
     }
     if (target != NULL) {
         target->pre->nxt = new;
@@ -112,36 +107,30 @@ DListRet dlist_delete(DList *thiz, size_t index)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
-    if (target != NULL) {
-        target->nxt->pre = target->pre;
-        target->pre->nxt = target->nxt;
-        node_destroy(target);
-        thiz->size--;
-        return OK;
-    }
-    return ERR;
+    return_val_if_fail(target != NULL, ERR);
+    target->nxt->pre = target->pre;
+    target->pre->nxt = target->nxt;
+    node_destroy(target);
+    thiz->size--;
+    return OK;
 }
 
 DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
-    if (target != NULL) {
-        *data = target->data;
-        return OK;
-    }
-    return ERR;
+    return_val_if_fail(target != NULL, ERR);
+    *data = target->data;
+    return OK;
 }
 
 DListRet dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
-    if (target != NULL) {
-        target->data = data;
-        return OK;
-    }
-    return ERR;
+    return_val_if_fail(target != NULL, ERR);
+    target->data = data;
+    return OK;
 }
 
 size_t dlist_size(const DList *thiz)

@@ -100,7 +100,9 @@ DListRet dlist_prepend(DList *thiz, void *data)
 
 DListRet dlist_append(DList *thiz, void *data)
 {
-    return dlist_insert(thiz, thiz->size, data);
+    int index = dlist_size(thiz);
+    return_val_if_fail(index != -1, ERR);
+    return dlist_insert(thiz, index, data);
 }
 
 DListRet dlist_delete(DList *thiz, size_t index)

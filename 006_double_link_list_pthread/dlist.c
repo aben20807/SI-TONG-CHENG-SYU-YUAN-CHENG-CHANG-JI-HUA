@@ -70,7 +70,7 @@ void dlist_destroy(DList* thiz)
     free(thiz);
 }
 
-DListRet dlist_insert(DList *thiz, size_t index, void *data)
+Ret dlist_insert(DList *thiz, size_t index, void *data)
 {
     return_val_if_fail(thiz != NULL && data != NULL, ERR);
     Node *new = node_create(data);
@@ -93,19 +93,19 @@ DListRet dlist_insert(DList *thiz, size_t index, void *data)
     return ERR;
 }
 
-DListRet dlist_prepend(DList *thiz, void *data)
+Ret dlist_prepend(DList *thiz, void *data)
 {
     return dlist_insert(thiz, 0, data);
 }
 
-DListRet dlist_append(DList *thiz, void *data)
+Ret dlist_append(DList *thiz, void *data)
 {
     int index = dlist_size(thiz);
     return_val_if_fail(index != -1, ERR);
     return dlist_insert(thiz, index, data);
 }
 
-DListRet dlist_delete(DList *thiz, size_t index)
+Ret dlist_delete(DList *thiz, size_t index)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
@@ -117,7 +117,7 @@ DListRet dlist_delete(DList *thiz, size_t index)
     return OK;
 }
 
-DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
+Ret dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
@@ -126,7 +126,7 @@ DListRet dlist_get_by_index(DList *thiz, size_t index, void **data)
     return OK;
 }
 
-DListRet dlist_set_by_index(DList *thiz, size_t index, void *data)
+Ret dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *target = node_at(thiz, index);
@@ -141,7 +141,7 @@ size_t dlist_size(const DList *thiz)
     return thiz->size;
 }
 
-DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
+Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
     return_val_if_fail(thiz != NULL, ERR);
     Node *itr = thiz->head->nxt;
@@ -161,7 +161,7 @@ DListRet dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 #include <assert.h>
 #include <time.h>
 
-DListRet print_int(void *ctx, void *data, bool is_first)
+Ret print_int(void *ctx, void *data, bool is_first)
 {
     if (is_first) {
         printf("%d", *(int *)data);

@@ -1,6 +1,8 @@
 #ifndef _LOCKER_H
 #define _LOCKER_H
 
+DECLS_BEGIN
+
 typedef Ret (*LockerLockFunc)(Locker *thiz);
 typedef Ret (*LockerUnlockFunc)(Locker *thiz);
 typedef void (*LockerDestroyFunc)(Locker *thiz);
@@ -13,6 +15,6 @@ struct _Locker {
     char priv[0];
 }
 
-static inline Ret locker_lock(Lock)
+DECLS_END
 
 #endif

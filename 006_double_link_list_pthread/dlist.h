@@ -9,7 +9,7 @@ DECLS_BEGIN
 typedef struct _DList DList;
 typedef Ret (*DListVisitFunc)(void *ctx, void *data, bool is_first);
 
-DList *dlist_create(void);
+DList *dlist_create(Locker *locker);
 void dlist_destroy(DList* thiz);
 Ret dlist_insert(DList *thiz, size_t index, void *data);
 Ret dlist_prepend(DList *thiz, void *data);

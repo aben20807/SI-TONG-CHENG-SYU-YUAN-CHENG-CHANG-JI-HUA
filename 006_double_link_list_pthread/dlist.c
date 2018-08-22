@@ -46,14 +46,39 @@ static Node *node_at(DList *thiz, const int index)
     return NULL;
 }
 
-DList *dlist_create(void)
+static void dlist_lock(DList *thiz)
+{
+    if (thiz->locker != NULL) {
+        locker_lock(thiz->lock);
+    }
+}
+
+static void dlist_unlock(DList *thiz)
+{
+    if (thiz->locker != NULL) {
+        locker_unlock(thiz->lock);
+    }
+}
+
+static void dlist_locker_destroy(DList *thiz)
+{
+    if (thiz->locker != NULL) {
+        locker_unlock(thiz->lock);
+        locker_destroy(thiz->lock);
+    }
+}
+
+DList *dlist_create(Locker *locker)
 {
     DList *ret = calloc(1, sizeof(DList));
-    ret->size = 0;
-    ret->head = calloc(1, sizeof(Node));
-    ret->tail = calloc(1, sizeof(Node));
-    ret->head->nxt = ret->tail;
-    ret->tail->pre = ret->head;
+    if (thiz != NULL) {
+        ret->size = 0;
+        ret->head = calloc(1, sizeof(Node));
+        ret->tail = calloc(1, sizeof(Node));
+        ret->head->nxt = ret->tail;
+        ret->tail->pre = ret->head;
+        ret->locker = locker;
+    }
     return ret;
 }
 

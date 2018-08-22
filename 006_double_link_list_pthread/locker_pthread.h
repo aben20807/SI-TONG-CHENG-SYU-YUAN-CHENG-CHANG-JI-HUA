@@ -5,7 +5,7 @@
 
 DECLS_BEGIN
 
-Locker* locker_pthread_create(void);
+Locker *locker_pthread_create(void);
 
 DECLS_END
 

@@ -5,17 +5,17 @@
 
 DECLS_BEGIN
 
+typedef struct _Locker Locker;
 typedef Ret (*LockerLockFunc)(Locker *thiz);
 typedef Ret (*LockerUnlockFunc)(Locker *thiz);
 typedef void (*LockerDestroyFunc)(Locker *thiz);
 
-typedef struct _Locker Locker;
 struct _Locker {
     LockerLockFunc lock;
     LockerUnlockFunc unlock;
     LockerDestroyFunc destroy;
     char priv[0];
-}
+};
 
 static inline Ret locker_lock(Locker *thiz)
 {
@@ -31,9 +31,8 @@ static inline Ret locker_unlock(Locker *thiz)
 
 static inline void locker_destroy(Locker *thiz)
 {
-    return_val_if_fail(thiz != NULL && thiz->lock != NULL, ERR);
+    return_if_fail(thiz != NULL && thiz->lock != NULL);
     thiz->destroy(thiz);
-    return;
 }
 
 DECLS_END

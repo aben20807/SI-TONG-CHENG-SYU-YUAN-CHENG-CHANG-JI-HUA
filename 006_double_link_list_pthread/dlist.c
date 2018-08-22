@@ -12,6 +12,7 @@ struct _DList {
     size_t size;
     Node *head;
     Node *tail;
+    Locker *locker;
 };
 
 static Node *node_create(void *data)
@@ -49,29 +50,29 @@ static Node *node_at(DList *thiz, const int index)
 static void dlist_lock(DList *thiz)
 {
     if (thiz->locker != NULL) {
-        locker_lock(thiz->lock);
+        locker_lock(thiz->locker);
     }
 }
 
 static void dlist_unlock(DList *thiz)
 {
     if (thiz->locker != NULL) {
-        locker_unlock(thiz->lock);
+        locker_unlock(thiz->locker);
     }
 }
 
 static void dlist_locker_destroy(DList *thiz)
 {
     if (thiz->locker != NULL) {
-        locker_unlock(thiz->lock);
-        locker_destroy(thiz->lock);
+        locker_unlock(thiz->locker);
+        locker_destroy(thiz->locker);
     }
 }
 
 DList *dlist_create(Locker *locker)
 {
     DList *ret = calloc(1, sizeof(DList));
-    if (thiz != NULL) {
+    if (ret != NULL) {
         ret->size = 0;
         ret->head = calloc(1, sizeof(Node));
         ret->tail = calloc(1, sizeof(Node));
@@ -185,6 +186,7 @@ Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 
 #include <assert.h>
 #include <time.h>
+#include "locker_pthread.h"
 
 Ret print_int(void *ctx, void *data, bool is_first)
 {
@@ -222,7 +224,7 @@ void test_int_dlist()
     int n = 100;
     void *data = NULL;
 
-    DList* d = dlist_create();
+    DList* d = dlist_create(locker_pthread_create());
     assert(dlist_size(d) == 0);
 
     /* dlist_append */

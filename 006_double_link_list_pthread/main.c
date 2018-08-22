@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "dlist.h"
+#include "locker_pthread.h"
 
-DListRet print_int(void *ctx, void *data, bool is_first)
+Ret print_int(void *ctx, void *data, bool is_first)
 {
     if (is_first) {
         printf("%d", *(int *)data);
@@ -17,14 +18,14 @@ void print(DList *thiz) {
     printf("\n");
 }
 
-DListRet sum_cb(void *ctx, void *data, bool is_first)
+Ret sum_cb(void *ctx, void *data, bool is_first)
 {
     long long *result = (long long *)ctx;
     *result += *(int *)data;
     return OK;
 }
 
-DListRet max_cb(void *ctx, void *data, bool is_first)
+Ret max_cb(void *ctx, void *data, bool is_first)
 {
     int *result = (int *)ctx;
     if (is_first) {
@@ -38,7 +39,7 @@ DListRet max_cb(void *ctx, void *data, bool is_first)
 int main(int argc, char *argv[]){
 
     printf("OuO\n");
-    DList *d = dlist_create();
+    DList *d = dlist_create(NULL);
     print(d);
 
     int data1 = 1;

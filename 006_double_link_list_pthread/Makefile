@@ -1,22 +1,30 @@
 CC = gcc
-FLAGS = -g -lpthread
+CFLAGS = -lpthread -Wall
 CFILES = dlist.c locker_pthread.c
+OBJS = main.o dlist.o locker_pthread.o
+EXEC = main
+TARGETS = $(EXEC)
+LIB = libdlist.so
+LINK = -L. -ldlist
 
-# all: main
-#
-# main: main.o dlist.o
-# 	${CC} -o main dlist.o main.o
-#
-# dlist.o: dlist.c dlist.h
-# 	${CC} -c dlist.c
-#
-# main.o: main.c dlist.h
-# 	${CC} -c main.c
+.PHONY: all
+all: $(TARGETS)
 
+$(EXEC): $(OBJS) $(LIB)
+	$(CC) $(CFLAGS) $(OBJS) -L. -ldlist -o $@
+
+$(LIB): dlist.o locker_pthread.o
+	$(CC) $(CFLAGS) dlist.o locker_pthread.o -shared -o $@
+
+%.o: %.c
+	$(CC) -c $<
+
+.PHONY: test
 test:
-	${CC} ${FLAGS} ${CFILES} -shared -o libdlist.so
-	${CC} ${FLAGS} ${CFILES} -DDLIST_TEST -o dlist_test
+	$(CC) $(CFLAGS) $(CFILES) -g -shared -o libdlist.so
+	$(CC) $(CFLAGS) $(CFILES) -g -DDLIST_TEST -o dlist_test
 	./dlist_test
 
+.PHONY: clean
 clean:
 	rm *.o main *.stackdump dlist_test

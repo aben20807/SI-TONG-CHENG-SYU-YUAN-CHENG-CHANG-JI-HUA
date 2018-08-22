@@ -19,3 +19,24 @@ Locker *locker_pthread_create(void)
     }
     return ret;
 }
+
+static Ret locker_pthread_lock(Locker *thiz)
+{
+    PrivInfo *priv = (PrivInfo *)thiz->priv;
+    int ret = pthread_mutex_lock(&priv->mutex);
+    return (ret == 0)? OK: ERR;
+}
+
+static Ret locker_pthread_unlock(Locker *thiz)
+{
+    PrivInfo *priv = (PrivInfo *)thiz->priv;
+    int ret = pthread_mutex_unlock(&priv->mutex);
+    return (ret == 0)? OK: ERR;
+}
+
+static void locker_pthread_destroy(Locker *thiz)
+{
+    PrivInfo *priv = (PrivInfo *)thiz->priv;
+    int ret = pthread_mutex_destroy(&priv->mutex);
+    free(thiz);
+}

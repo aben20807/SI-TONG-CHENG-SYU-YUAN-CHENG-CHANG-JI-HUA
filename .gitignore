@@ -4,3 +4,4 @@
 .gdb_history
 *.stackdump
 *.so
+*.dll

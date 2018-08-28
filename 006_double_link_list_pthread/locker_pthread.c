@@ -24,7 +24,7 @@ static Ret locker_pthread_unlock(Locker *thiz)
 static void locker_pthread_destroy(Locker *thiz)
 {
     PrivInfo *priv = (PrivInfo *)thiz->priv;
-    int ret = pthread_mutex_destroy(&priv->mutex);
+    pthread_mutex_destroy(&priv->mutex);
     free(thiz);
 }
 

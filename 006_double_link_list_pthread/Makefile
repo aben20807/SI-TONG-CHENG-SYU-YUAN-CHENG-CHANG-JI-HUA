@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -lpthread -Wall
+CFLAGS = -lpthread -Wall -Wno-unused-function
 CFILES = dlist.c locker_pthread.c
 OBJS = dlist.o locker_pthread.o
 EXEC = main
@@ -27,4 +27,4 @@ test:
 
 .PHONY: clean
 clean:
-	rm *.o main *.stackdump dlist_test *.so *.dll
+	rm -f *.o main *.stackdump dlist_test *.so *.dll

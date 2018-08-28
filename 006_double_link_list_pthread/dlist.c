@@ -200,7 +200,7 @@ Ret print_int(void *ctx, void *data, bool is_first)
 
 void print(DList *thiz)
 {
-    printf("size: %d, list: ", dlist_size(thiz));
+    printf("size: %ld, list: ", dlist_size(thiz));
     dlist_foreach(thiz, print_int, NULL);
     printf("\n");
 }
@@ -228,7 +228,7 @@ void test_int_dlist()
     assert(dlist_size(d) == 0);
 
     /* dlist_append */
-    for(int i = 0, j = 0; i < n; i++) {
+    for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i;
         assert(dlist_append(d, (void *)data) == OK);
@@ -264,7 +264,7 @@ void test_int_dlist()
     assert(dlist_size(d) == 0);
 
     /* dlist_prepend */
-    for(int i = 0, j = 0; i < n; i++) {
+    for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i;
         assert(dlist_prepend(d, (void *)data) == OK);
@@ -280,7 +280,7 @@ void test_int_dlist()
 
     /* dlist_insert */
     srand(time(NULL));
-    for(int i = 1, j = 0; i <= n; i++) {
+    for(int i = 1; i <= n; i++) {
         data = malloc(sizeof(int));
         int random = (rand() % i);
         // printf("%d\n", random);

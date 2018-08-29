@@ -17,7 +17,7 @@ Ret dlist_append(DList *thiz, void *data);
 Ret dlist_delete(DList *thiz, size_t index);
 Ret dlist_get_by_index(DList *thiz, size_t index, void **data);
 Ret dlist_set_by_index(DList *thiz, size_t index, void *data);
-size_t dlist_size(const DList *thiz);
+size_t dlist_size(DList *thiz);
 Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx);
 
 DECLS_END

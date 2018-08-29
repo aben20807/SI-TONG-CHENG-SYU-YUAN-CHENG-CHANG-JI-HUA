@@ -86,6 +86,7 @@ DList *dlist_create(Locker *locker)
 void dlist_destroy(DList* thiz)
 {
     return_if_fail(thiz != NULL);
+    dlist_lock(thiz);
     Node *itr = thiz->head->nxt;
     Node *next = NULL;
     while (itr != thiz->tail) {
@@ -93,15 +94,18 @@ void dlist_destroy(DList* thiz)
         node_destroy(itr);
         itr = next;
     }
+    dlist_unlock(thiz);
     free(thiz);
 }
 
 Ret dlist_insert(DList *thiz, size_t index, void *data)
 {
-    return_val_if_fail(thiz != NULL && data != NULL, ERR);
+    Ret ret = OK;
+    return_val_if_fail(thiz != NULL && data != NULL, ERR); // TODO allow data NULL
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, ERR);
     Node *target = NULL;
+    dlist_lock(thiz);
     if (index == thiz->size) {
         target = thiz->tail;
     } else {
@@ -113,10 +117,13 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
         new->nxt = target;
         target->pre = new;
         thiz->size++;
-        return OK;
+        ret = OK;
+    } else {
+        node_destroy(new);
+        ret = ERR;
     }
-    node_destroy(new);
-    return ERR;
+    dlist_unlock(thiz);
+    return ret;
 }
 
 Ret dlist_prepend(DList *thiz, void *data)
@@ -133,53 +140,80 @@ Ret dlist_append(DList *thiz, void *data)
 
 Ret dlist_delete(DList *thiz, size_t index)
 {
+    Ret ret = OK;
     return_val_if_fail(thiz != NULL, ERR);
+    dlist_lock(thiz);
     Node *target = node_at(thiz, index);
-    return_val_if_fail(target != NULL, ERR);
-    target->nxt->pre = target->pre;
-    target->pre->nxt = target->nxt;
-    node_destroy(target);
-    thiz->size--;
-    return OK;
+    if (target != NULL) {
+        target->nxt->pre = target->pre;
+        target->pre->nxt = target->nxt;
+        node_destroy(target);
+        thiz->size--;
+        ret = OK;
+    } else {
+        ret = ERR;
+    }
+    dlist_unlock(thiz);
+    return ret;
 }
 
 Ret dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
+    Ret ret = OK;
     return_val_if_fail(thiz != NULL, ERR);
+    dlist_lock(thiz);
     Node *target = node_at(thiz, index);
-    return_val_if_fail(target != NULL, ERR);
-    *data = target->data;
-    return OK;
+    if (target != NULL) {
+        *data = target->data;
+        ret = OK;
+    } else {
+        ret = ERR;
+    }
+    dlist_unlock(thiz);
+    return ret;
 }
 
 Ret dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
+    Ret ret = OK;
     return_val_if_fail(thiz != NULL, ERR);
+    dlist_lock(thiz);
     Node *target = node_at(thiz, index);
-    return_val_if_fail(target != NULL, ERR);
-    target->data = data;
-    return OK;
+    if (target != NULL) {
+        target->data = data;
+        ret = OK;
+    } else {
+        ret = ERR;
+    }
+    dlist_unlock(thiz);
+    return ret;
 }
 
-size_t dlist_size(const DList *thiz)
+size_t dlist_size(DList *thiz)
 {
     return_val_if_fail(thiz != NULL, -1);
-    return thiz->size;
+    dlist_lock(thiz);
+    size_t ret = thiz->size;
+    dlist_unlock(thiz);
+    return ret;
 }
 
 Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
+    Ret ret = OK;
     return_val_if_fail(thiz != NULL, ERR);
+    dlist_lock(thiz);
     Node *itr = thiz->head->nxt;
     if (itr != thiz->tail) {
-        visit(ctx, itr->data, true);
+        ret = visit(ctx, itr->data, true);
         itr = itr->nxt;
     }
     while (itr != thiz->tail) {
-        visit(ctx, itr->data, false);
+        ret = visit(ctx, itr->data, false);
         itr = itr->nxt;
     }
-    return OK;
+    dlist_unlock(thiz);
+    return ret;
 }
 
 #ifdef DLIST_TEST

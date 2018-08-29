@@ -35,7 +35,6 @@ static void node_destroy(Node *node)
 
 static Node *node_at(DList *thiz, const int index)
 {
-    // return_val_if_fail(thiz != NULL && 0 <= index && index < thiz->size, NULL);
     return_val_if_fail(thiz != NULL, NULL);
     Node *itr = thiz->head->nxt;
     int cnt = 0;
@@ -105,10 +104,10 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
     return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, RET_OOM);
-    printf("%ld %ld\n", thiz->size, index);
+    // printf("%ld %ld\n", thiz->size, index);
     Node *target = NULL;
     dlist_lock(thiz);
-    if (index == thiz->size) {
+    if (index == -1 || index == thiz->size) {
         target = thiz->tail;
     } else {
         target = node_at(thiz, index);
@@ -122,6 +121,7 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
         ret = RET_OK;
     } else {
         node_destroy(new);
+        printf("%ld %ld\n", thiz->size, index);
         ret = RET_OOB;
     }
     dlist_unlock(thiz);
@@ -135,10 +135,7 @@ Ret dlist_prepend(DList *thiz, void *data)
 
 Ret dlist_append(DList *thiz, void *data)
 {
-    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
-    int index = dlist_size(thiz);
-    return_val_if_fail(index != -1, RET_INVALID_PARAMS);
-    return dlist_insert(thiz, index, data);
+    return dlist_insert(thiz, -1, data);
 }
 
 Ret dlist_delete(DList *thiz, size_t index)
@@ -195,7 +192,7 @@ Ret dlist_set_by_index(DList *thiz, size_t index, void *data)
 
 size_t dlist_size(DList *thiz)
 {
-    return_val_if_fail(thiz != NULL, -1);
+    return_val_if_fail(thiz != NULL, -2);
     dlist_lock(thiz);
     size_t ret = thiz->size;
     dlist_unlock(thiz);
@@ -342,7 +339,7 @@ void test_int_dlist()
 void test_invalid_params()
 {
     printf("===========Warning is normal begin==============\n");
-    assert(dlist_size(NULL) == -1);
+    assert(dlist_size(NULL) == -2);
     assert(dlist_prepend(NULL, 0) == RET_INVALID_PARAMS);
     assert(dlist_append(NULL, 0) == RET_INVALID_PARAMS);
     assert(dlist_delete(NULL, 0) == RET_INVALID_PARAMS);
@@ -360,14 +357,14 @@ static void* producer(void* param)
     for(i = 0; i < 100; i++) {
         usleep(200);
         // assert(dlist_append(dlist, (void*)i) == RET_OK);
-        // printf("P%d, %s\n", i, get_ret(dlist_append(dlist, (void*)i)));
-        printf("P%d, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
+        printf("P%ld, %s\n", i, get_ret(dlist_append(dlist, (void*)i)));
+        // printf("P%d, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
     }
     sleep(1);
     for(i = 0; i < 100; i++) {
         usleep(200);
         // assert(dlist_prepend(dlist, (void*)i) == RET_OK);
-        printf("P%d, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
+        printf("P%ld, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
     }
     return NULL;
 }

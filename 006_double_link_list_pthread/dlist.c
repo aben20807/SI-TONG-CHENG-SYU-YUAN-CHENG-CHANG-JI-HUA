@@ -104,7 +104,6 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
     return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, RET_OOM);
-    // printf("%ld %ld\n", thiz->size, index);
     Node *target = NULL;
     dlist_lock(thiz);
     if (index == -1 || index == thiz->size) {
@@ -121,7 +120,6 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
         ret = RET_OK;
     } else {
         node_destroy(new);
-        printf("%ld %ld\n", thiz->size, index);
         ret = RET_OOB;
     }
     dlist_unlock(thiz);
@@ -142,7 +140,6 @@ Ret dlist_delete(DList *thiz, size_t index)
 {
     Ret ret = RET_OK;
     return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
-    // printf("%ld %ld\n", thiz->size, index);
     dlist_lock(thiz);
     Node *target = node_at(thiz, index);
     if (target != NULL) {
@@ -221,8 +218,7 @@ Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 
 #include <assert.h>
 #include <time.h>
-
-#include <unistd.h>
+#include <unistd.h> // sleep
 #include <pthread.h>
 #include "locker_pthread.h"
 
@@ -355,16 +351,15 @@ static void* producer(void* param)
     long i = 0;
     DList* dlist = (DList*)param;
     for(i = 0; i < 100; i++) {
-        usleep(200);
-        // assert(dlist_append(dlist, (void*)i) == RET_OK);
-        printf("P%ld, %s\n", i, get_ret(dlist_append(dlist, (void*)i)));
-        // printf("P%d, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
+        usleep(100);
+        assert(dlist_append(dlist, (void*)i) == RET_OK);
+        // printf("P%ld, %s\n", i, get_ret(dlist_append(dlist, (void*)i)));
     }
     sleep(1);
     for(i = 0; i < 100; i++) {
-        usleep(200);
-        // assert(dlist_prepend(dlist, (void*)i) == RET_OK);
-        printf("P%ld, %s\n", i, get_ret(dlist_prepend(dlist, (void*)i)));
+        usleep(300);
+        assert(dlist_prepend(dlist, (void*)i) == RET_OK);
+        // printf("P%ld, %s\n", i + 100, get_ret(dlist_prepend(dlist, (void*)i)));
     }
     return NULL;
 }
@@ -379,10 +374,23 @@ static void* consumer(void* param)
             i--;
             continue;
         }
-        // assert(dlist_delete(dlist, 0) == RET_OK);
-        printf("C%d, %s\n", i, get_ret(dlist_delete(dlist, 0)));
+        assert(dlist_delete(dlist, 0) == RET_OK);
+        // printf("C%d, %s\n", i, get_ret(dlist_delete(dlist, 0)));
     }
     return NULL;
+}
+
+static void multi_thread_test()
+{
+    printf("===========multi thread begin==============\n");
+    pthread_t consumer_tid = 0;
+    pthread_t producer_tid = 0;
+    DList* dlist = dlist_create(locker_pthread_create());
+    pthread_create(&producer_tid, NULL, producer, dlist);
+    pthread_create(&consumer_tid, NULL, consumer, dlist);
+    pthread_join(consumer_tid, NULL);
+    pthread_join(producer_tid, NULL);
+    printf("===========multi thread end==============\n");
 }
 
 int main()
@@ -392,13 +400,7 @@ int main()
     test_invalid_params();
 
     /* multi thread test */
-    pthread_t consumer_tid = 0;
-    pthread_t producer_tid = 0;
-    DList* dlist = dlist_create(locker_pthread_create());
-    pthread_create(&producer_tid, NULL, producer, dlist);
-    pthread_create(&consumer_tid, NULL, consumer, dlist);
-    pthread_join(consumer_tid, NULL);
-    pthread_join(producer_tid, NULL);
+    multi_thread_test();
     return 0;
 }
 

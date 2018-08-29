@@ -101,7 +101,7 @@ void dlist_destroy(DList* thiz)
 Ret dlist_insert(DList *thiz, size_t index, void *data)
 {
     Ret ret = RET_OK;
-    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS); // TODO allow data NULL
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     Node *new = node_create(data);
     return_val_if_fail(new != NULL, RET_OOM);
     Node *target = NULL;
@@ -208,7 +208,7 @@ Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
         ret = visit(ctx, itr->data, true);
         itr = itr->nxt;
     }
-    while (itr != thiz->tail) {
+    while (itr != thiz->tail && ret != RET_STOP) {
         ret = visit(ctx, itr->data, false);
         itr = itr->nxt;
     }

@@ -9,7 +9,7 @@ Ret print_int(void *ctx, void *data, bool is_first)
     } else {
         printf(" - %d", *(int *)data);
     }
-    return OK;
+    return RET_OK;
 }
 
 void print(DList *thiz) {
@@ -22,7 +22,7 @@ Ret sum_cb(void *ctx, void *data, bool is_first)
 {
     long long *result = (long long *)ctx;
     *result += *(int *)data;
-    return OK;
+    return RET_OK;
 }
 
 Ret max_cb(void *ctx, void *data, bool is_first)
@@ -33,7 +33,7 @@ Ret max_cb(void *ctx, void *data, bool is_first)
     } else {
         *result = (*result > *(int *)data)? *result: *(int *)data;
     }
-    return OK;
+    return RET_OK;
 }
 
 int main(int argc, char *argv[]){

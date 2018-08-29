@@ -19,13 +19,13 @@ struct _Locker {
 
 static inline Ret locker_lock(Locker *thiz)
 {
-    return_val_if_fail(thiz != NULL && thiz->lock != NULL, ERR);
+    return_val_if_fail(thiz != NULL && thiz->lock != NULL, RET_INVALID_PARAMS);
     return thiz->lock(thiz);
 }
 
 static inline Ret locker_unlock(Locker *thiz)
 {
-    return_val_if_fail(thiz != NULL && thiz->unlock != NULL, ERR);
+    return_val_if_fail(thiz != NULL && thiz->unlock != NULL, RET_INVALID_PARAMS);
     return thiz->unlock(thiz);
 }
 

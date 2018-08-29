@@ -11,14 +11,14 @@ static Ret locker_pthread_lock(Locker *thiz)
 {
     PrivInfo *priv = (PrivInfo *)thiz->priv;
     int ret = pthread_mutex_lock(&priv->mutex);
-    return (ret == 0)? OK: ERR;
+    return (ret == 0)? RET_OK: RET_FAIL;
 }
 
 static Ret locker_pthread_unlock(Locker *thiz)
 {
     PrivInfo *priv = (PrivInfo *)thiz->priv;
     int ret = pthread_mutex_unlock(&priv->mutex);
-    return (ret == 0)? OK: ERR;
+    return (ret == 0)? RET_OK: RET_FAIL;
 }
 
 static void locker_pthread_destroy(Locker *thiz)

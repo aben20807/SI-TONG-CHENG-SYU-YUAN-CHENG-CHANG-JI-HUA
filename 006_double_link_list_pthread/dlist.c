@@ -100,10 +100,10 @@ void dlist_destroy(DList* thiz)
 
 Ret dlist_insert(DList *thiz, size_t index, void *data)
 {
-    Ret ret = OK;
-    return_val_if_fail(thiz != NULL && data != NULL, ERR); // TODO allow data NULL
+    Ret ret = RET_OK;
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS); // TODO allow data NULL
     Node *new = node_create(data);
-    return_val_if_fail(new != NULL, ERR);
+    return_val_if_fail(new != NULL, RET_OOM);
     Node *target = NULL;
     dlist_lock(thiz);
     if (index == thiz->size) {
@@ -117,10 +117,10 @@ Ret dlist_insert(DList *thiz, size_t index, void *data)
         new->nxt = target;
         target->pre = new;
         thiz->size++;
-        ret = OK;
+        ret = RET_OK;
     } else {
         node_destroy(new);
-        ret = ERR;
+        ret = RET_OOB;
     }
     dlist_unlock(thiz);
     return ret;
@@ -134,14 +134,14 @@ Ret dlist_prepend(DList *thiz, void *data)
 Ret dlist_append(DList *thiz, void *data)
 {
     int index = dlist_size(thiz);
-    return_val_if_fail(index != -1, ERR);
+    return_val_if_fail(index != -1, RET_INVALID_PARAMS);
     return dlist_insert(thiz, index, data);
 }
 
 Ret dlist_delete(DList *thiz, size_t index)
 {
-    Ret ret = OK;
-    return_val_if_fail(thiz != NULL, ERR);
+    Ret ret = RET_OK;
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     dlist_lock(thiz);
     Node *target = node_at(thiz, index);
     if (target != NULL) {
@@ -149,9 +149,9 @@ Ret dlist_delete(DList *thiz, size_t index)
         target->pre->nxt = target->nxt;
         node_destroy(target);
         thiz->size--;
-        ret = OK;
+        ret = RET_OK;
     } else {
-        ret = ERR;
+        ret = RET_OOB;
     }
     dlist_unlock(thiz);
     return ret;
@@ -159,15 +159,15 @@ Ret dlist_delete(DList *thiz, size_t index)
 
 Ret dlist_get_by_index(DList *thiz, size_t index, void **data)
 {
-    Ret ret = OK;
-    return_val_if_fail(thiz != NULL, ERR);
+    Ret ret = RET_OK;
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     dlist_lock(thiz);
     Node *target = node_at(thiz, index);
     if (target != NULL) {
         *data = target->data;
-        ret = OK;
+        ret = RET_OK;
     } else {
-        ret = ERR;
+        ret = RET_OOB;
     }
     dlist_unlock(thiz);
     return ret;
@@ -175,15 +175,15 @@ Ret dlist_get_by_index(DList *thiz, size_t index, void **data)
 
 Ret dlist_set_by_index(DList *thiz, size_t index, void *data)
 {
-    Ret ret = OK;
-    return_val_if_fail(thiz != NULL, ERR);
+    Ret ret = RET_OK;
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     dlist_lock(thiz);
     Node *target = node_at(thiz, index);
     if (target != NULL) {
         target->data = data;
-        ret = OK;
+        ret = RET_OK;
     } else {
-        ret = ERR;
+        ret = RET_OOB;
     }
     dlist_unlock(thiz);
     return ret;
@@ -200,8 +200,8 @@ size_t dlist_size(DList *thiz)
 
 Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 {
-    Ret ret = OK;
-    return_val_if_fail(thiz != NULL, ERR);
+    Ret ret = RET_OK;
+    return_val_if_fail(thiz != NULL, RET_INVALID_PARAMS);
     dlist_lock(thiz);
     Node *itr = thiz->head->nxt;
     if (itr != thiz->tail) {
@@ -229,7 +229,7 @@ Ret print_int(void *ctx, void *data, bool is_first)
     } else {
         printf(" - %d", *(int *)data);
     }
-    return OK;
+    return RET_OK;
 }
 
 void print(DList *thiz)
@@ -244,9 +244,9 @@ void clear(DList *thiz, int n)
     /* dlist_delete */
     void *data = NULL;
     for(int i = 0; i < n; i++) {
-        assert(dlist_get_by_index(thiz, 0, (void **)&data) == OK);
+        assert(dlist_get_by_index(thiz, 0, (void **)&data) == RET_OK);
         assert(dlist_size(thiz) == (n - i));
-        assert(dlist_delete(thiz, 0) == OK);
+        assert(dlist_delete(thiz, 0) == RET_OK);
         free(data);
         assert(dlist_size(thiz) == (n - i - 1));
     }
@@ -265,9 +265,9 @@ void test_int_dlist()
     for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i;
-        assert(dlist_append(d, (void *)data) == OK);
+        assert(dlist_append(d, (void *)data) == RET_OK);
         assert(dlist_size(d) == (i + 1));
-        assert(dlist_get_by_index(d, i, (void **)&data) == OK);
+        assert(dlist_get_by_index(d, i, (void **)&data) == RET_OK);
         assert(*(int *)data == i);
     }
     assert(dlist_size(d) == n);
@@ -277,8 +277,8 @@ void test_int_dlist()
     for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i * 2;
-        assert(dlist_set_by_index(d, i, (void *)data) == OK);
-        assert(dlist_get_by_index(d, i, (void **)&data) == OK);
+        assert(dlist_set_by_index(d, i, (void *)data) == RET_OK);
+        assert(dlist_get_by_index(d, i, (void **)&data) == RET_OK);
         assert(*(int *)data == 2 * i);
     }
     assert(dlist_size(d) == n);
@@ -286,11 +286,11 @@ void test_int_dlist()
 
     /* dlist_delete */
     for(int i = 0; i < n; i++) {
-        assert(dlist_get_by_index(d, 0, (void **)&data) == OK);
+        assert(dlist_get_by_index(d, 0, (void **)&data) == RET_OK);
         assert(*(int *)data == i * 2);
         // printf("%d\n", *(int *)data);
         assert(dlist_size(d) == (n - i));
-        assert(dlist_delete(d, 0) == OK);
+        assert(dlist_delete(d, 0) == RET_OK);
         free(data);
         // print(d);
         assert(dlist_size(d) == (n - i - 1));
@@ -301,9 +301,9 @@ void test_int_dlist()
     for(int i = 0; i < n; i++) {
         data = malloc(sizeof(int));
         *(int *)data = i;
-        assert(dlist_prepend(d, (void *)data) == OK);
+        assert(dlist_prepend(d, (void *)data) == RET_OK);
         assert(dlist_size(d) == (i + 1));
-        assert(dlist_get_by_index(d, 0, (void **)&data) == OK);
+        assert(dlist_get_by_index(d, 0, (void **)&data) == RET_OK);
         assert(*(int *)data == i);
         // print(d);
     }
@@ -319,9 +319,9 @@ void test_int_dlist()
         int random = (rand() % i);
         // printf("%d\n", random);
         *(int *)data = i;
-        assert(dlist_insert(d, random, (void *)data) == OK);
+        assert(dlist_insert(d, random, (void *)data) == RET_OK);
         assert(dlist_size(d) == (i));
-        assert(dlist_get_by_index(d, random, (void **)&data) == OK);
+        assert(dlist_get_by_index(d, random, (void **)&data) == RET_OK);
         assert(*(int *)data == i);
         // print(d);
     }
@@ -336,13 +336,13 @@ void test_err()
 {
     printf("===========Warning is normal begin==============\n");
 	assert(dlist_size(NULL) == -1);
-	assert(dlist_prepend(NULL, 0) == ERR);
-	assert(dlist_append(NULL, 0) == ERR);
-	assert(dlist_delete(NULL, 0) == ERR);
-	assert(dlist_insert(NULL, 0, 0) == ERR);
-	assert(dlist_set_by_index(NULL, 0, NULL) == ERR);
-	assert(dlist_get_by_index(NULL, 0, NULL) == ERR);
-	assert(dlist_foreach(NULL, NULL, NULL) == ERR);
+	assert(dlist_prepend(NULL, 0) == RET_INVALID_PARAMS);
+	assert(dlist_append(NULL, 0) == RET_INVALID_PARAMS);
+	assert(dlist_delete(NULL, 0) == RET_INVALID_PARAMS);
+	assert(dlist_insert(NULL, 0, 0) == RET_INVALID_PARAMS);
+	assert(dlist_set_by_index(NULL, 0, NULL) == RET_INVALID_PARAMS);
+	assert(dlist_get_by_index(NULL, 0, NULL) == RET_INVALID_PARAMS);
+	assert(dlist_foreach(NULL, NULL, NULL) == RET_INVALID_PARAMS);
 	printf("===========Warning is normal end==============\n");
 }
 

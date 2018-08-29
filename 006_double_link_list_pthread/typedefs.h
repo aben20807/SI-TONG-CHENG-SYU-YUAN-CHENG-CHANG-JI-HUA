@@ -6,8 +6,12 @@
 #include <stdbool.h>
 
 typedef enum _Ret {
-    OK,
-    ERR,
+    RET_OK,
+    RET_OOM,            // Out of memory
+    RET_OOB,            // Index out of bounds
+    RET_STOP,
+    RET_FAIL,
+    RET_INVALID_PARAMS, // Invalid parameters
 } Ret;
 
 #ifdef __cplusplus

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -lpthread -Wall -Wno-unused-function
-CFILES = dlist.c locker_pthread.c
-OBJS = dlist.o locker_pthread.o
+CFILES = dlist.c locker_pthread.c locker_nest.c
+OBJS = dlist.o locker_pthread.o locker_nest.o
 EXEC = main
 TARGETS = $(EXEC)
 LIB = libdlist.dll

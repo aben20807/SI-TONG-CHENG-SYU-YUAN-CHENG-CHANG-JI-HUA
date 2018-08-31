@@ -221,6 +221,7 @@ Ret dlist_foreach(DList *thiz, DListVisitFunc visit, void *ctx)
 #include <unistd.h> // sleep
 #include <pthread.h>
 #include "locker_pthread.h"
+#include "locker_nest.h"
 
 Ret print_int(void *ctx, void *data, bool is_first)
 {
@@ -385,7 +386,9 @@ static void multi_thread_test()
     printf("===========multi thread begin==============\n");
     pthread_t consumer_tid = 0;
     pthread_t producer_tid = 0;
-    DList* dlist = dlist_create(locker_pthread_create());
+    Locker *locker = locker_pthread_create();
+    Locker *nest_locker = locker_nest_create(locker, (TaskSelfFunc)pthread_self);
+    DList* dlist = dlist_create(nest_locker);
     pthread_create(&producer_tid, NULL, producer, dlist);
     pthread_create(&consumer_tid, NULL, consumer, dlist);
     pthread_join(consumer_tid, NULL);

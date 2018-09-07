@@ -1,7 +1,6 @@
 #ifndef _LOCKER_NEST
 #define _LOCKER_NEST
 
-#include <stdlib.h>
 #include "locker.h"
 
 DECLS_BEGIN

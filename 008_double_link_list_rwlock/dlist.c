@@ -83,7 +83,7 @@ DList *dlist_create(Locker *locker)
     return ret;
 }
 
-void dlist_destroy(DList* thiz)
+void dlist_destroy(DList *thiz)
 {
     return_if_fail(thiz != NULL);
     dlist_lock(thiz);

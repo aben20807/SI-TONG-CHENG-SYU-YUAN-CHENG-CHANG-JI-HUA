@@ -1,7 +1,7 @@
-#include "locker.h"
-
 #ifndef _LOCKER_PTHREAD_H
 #define _LOCKER_PTHREAD_H
+
+#include "locker.h"
 
 DECLS_BEGIN
 

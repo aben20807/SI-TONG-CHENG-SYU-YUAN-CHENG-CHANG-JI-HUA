@@ -2,7 +2,6 @@
 #define _DLIST_H
 
 #include "locker.h"
-#include "typedefs.h"
 
 DECLS_BEGIN
 

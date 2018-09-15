@@ -8,6 +8,7 @@ void *thread_inc(void *count)
     for (TIMES) {
         (*(int *)count)++;
     }
+    return NULL;
 }
 
 void *thread_dec(void *count)
@@ -15,6 +16,7 @@ void *thread_dec(void *count)
     for (TIMES) {
         (*(int *)count)--;
     }
+    return NULL;
 }
 
 int main(void){

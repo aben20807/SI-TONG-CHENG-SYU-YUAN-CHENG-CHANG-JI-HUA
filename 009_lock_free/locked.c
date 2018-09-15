@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include "locker_pthread.h"
 
-#define TIMES 100000
+#define TIMES 1000000
 
 typedef struct {
     int counter;

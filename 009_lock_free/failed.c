@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define TIMES 100000
+#define TIMES 1000000
 
 static inline void inc(int *n)
 {

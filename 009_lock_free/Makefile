@@ -22,11 +22,11 @@ $(L): $(L).o $(OBJS)
 
 test: all
 	@ printf "\n"
-	@ ./$(F)
+	@ time -p ./$(F)
 	@ printf "\n"
-	@ ./$(A)
+	@ time -p ./$(A)
 	@ printf "\n"
-	@ ./$(L)
+	@ time -p ./$(L)
 
 clean:
 	rm -f $(F) $(A) $(L) *.o

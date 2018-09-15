@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define TIMES 100000
+#define TIMES 1000000
 #define ATOMIC_SMP_LOCK "lock ; "
 
 typedef struct {

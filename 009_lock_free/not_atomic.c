@@ -1,20 +1,32 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define TIMES int _i = 0; _i < 100000; _i++
+#define TIMES 100000
 
-void *thread_inc(void *count)
+void inc(int *n)
 {
-    for (TIMES) {
-        (*(int *)count)++;
+    (*n)++;
+}
+
+void dec(int *n)
+{
+    (*n)--;
+}
+
+void *thread_inc(void *param)
+{
+    int *n = (int *)param;
+    for (int i = 0; i < TIMES; i++) {
+        inc(n);
     }
     return NULL;
 }
 
-void *thread_dec(void *count)
+void *thread_dec(void *param)
 {
-    for (TIMES) {
-        (*(int *)count)--;
+    int *n = (int *)param;
+    for (int i = 0; i < TIMES; i++) {
+        dec(n);
     }
     return NULL;
 }

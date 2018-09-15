@@ -1,25 +1,32 @@
 CC = gcc
-N = failed
+F = failed
 A = atomic
+L = locked
+OBJS = locker_pthread.o
 CFLAGS = -pthread -Wall
 
 .PHONY: all, clean, test
-all: $(N) $(A)
+all: $(F) $(A) $(L)
 
-$(N): $(N).o
-	$(CC) $(CFLAGS) -o $@ $(N).o
+$(F): $(F).o
+	$(CC) $(CFLAGS) -o $@ $(F).o
 
 $(A): $(A).o
 	$(CC) $(CFLAGS) -o $@ $(A).o
+
+$(L): $(L).o $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(L).o $(OBJS)
 
 %.o: %.c
 	$(CC) -c $<
 
 test: all
 	@ printf "\n"
-	@ ./$(N)
+	@ ./$(F)
 	@ printf "\n"
 	@ ./$(A)
+	@ printf "\n"
+	@ ./$(L)
 
 clean:
-	rm -f $(N) $(A) *.o
+	rm -f $(F) $(A) $(L) *.o

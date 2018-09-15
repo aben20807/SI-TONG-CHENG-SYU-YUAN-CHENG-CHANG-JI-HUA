@@ -1,5 +1,5 @@
 CC = gcc
-N = not_atomic
+N = failed
 A = atomic
 CFLAGS = -pthread -Wall
 

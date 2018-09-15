@@ -33,7 +33,7 @@ void *thread_dec(void *param)
 
 int main(void)
 {
-    printf("not atomic:\n");
+    printf("failed:\n");
     int count = 0;
     pthread_t inc_tid = 0;
     pthread_t dec_tid = 0;

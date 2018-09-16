@@ -80,5 +80,6 @@ int main(void)
     pthread_join(dec_tid, NULL);
 
     printf("%d\n", count.counter);
+    locked_destroy(&count);
     return 0;
 }

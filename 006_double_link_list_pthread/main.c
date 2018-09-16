@@ -13,7 +13,7 @@ Ret print_int(void *ctx, void *data, bool is_first)
 }
 
 void print(DList *thiz) {
-    printf("size: %d, list: ", dlist_size(thiz));
+    printf("size: %ld, list: ", dlist_size(thiz));
     dlist_foreach(thiz, print_int, NULL);
     printf("\n");
 }

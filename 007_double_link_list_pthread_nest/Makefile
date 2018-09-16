@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -lpthread -Wall -Wno-unused-function
+CFLAGS = -Wall -Wno-unused-function
 CFILES = dlist.c locker_pthread.c locker_nest.c
 OBJS = dlist.o locker_pthread.o locker_nest.o
 EXEC = main
@@ -11,18 +11,18 @@ LINK = -L./ -ldlist
 all: $(TARGETS)
 
 $(EXEC): $(EXEC).o $(LIB)
-	$(CC) $(CFLAGS) $(EXEC).o $(LINK) -o $@
+	$(CC) $(CFLAGS) -lpthread $(EXEC).o $(LINK) -o $@
 
 $(LIB): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -shared -o $@
 
 %.o: %.c
-	$(CC) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 .PHONY: test
 test:
 	$(CC) $(CFLAGS) $(CFILES) -g -shared -o $(LIB)
-	$(CC) $(CFLAGS) $(CFILES) -g -DDLIST_TEST -o dlist_test
+	$(CC) $(CFLAGS) $(CFILES) -g -DDLIST_TEST -lpthread -o dlist_test
 	./dlist_test
 
 .PHONY: clean

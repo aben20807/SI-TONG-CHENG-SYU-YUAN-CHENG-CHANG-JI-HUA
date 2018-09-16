@@ -31,7 +31,7 @@ static inline Ret locker_unlock(Locker *thiz)
 
 static inline void locker_destroy(Locker *thiz)
 {
-    return_if_fail(thiz != NULL && thiz->lock != NULL);
+    return_if_fail(thiz != NULL && thiz->destroy != NULL);
     thiz->destroy(thiz);
 }
 
